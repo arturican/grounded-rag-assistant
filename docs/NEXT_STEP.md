@@ -2,37 +2,36 @@
 
 ## Current milestone
 
-Phase 5 - Vector storage and retrieval
+Phase 6 - Grounded answer generation
 
 ## Task
 
-Add an in-memory retrieval store over embeddings.
+Build deterministic grounded answer assembly from retrieved chunks.
 
 ## Files to update
 
-- `backend/app/retrieval.py`
-- `backend/tests/test_retrieval.py`
+- `backend/app/answering.py`
+- `backend/tests/test_answering.py`
 
 ## Required behavior
 
-- store chunk embeddings with metadata
-- retrieve top-k relevant chunks for a query embedding
-- return `RetrievedChunk` records ranked by score
-- keep ranking deterministic for tests
+- answer only from retrieved chunk text
+- return source references with file and page metadata when available
+- handle insufficient-context cases honestly
+- keep output deterministic for tests
 
 ## Constraints
 
 - keep the API pure and deterministic
-- build on top of `DocumentChunk` and `EmbeddingProvider`
-- use an in-memory implementation before adding FAISS
-- do not add answer generation yet
-- keep tests focused on ranking and metadata preservation
+- build on top of `RetrievedChunk`
+- do not call external LLMs yet
+- keep tests focused on answer selection and source formatting
 
 ## Done when
 
-- a retrieval store exists
-- ranked retrieval is covered by tests
-- the answer layer can consume retrieved chunks directly
+- an answer assembly layer exists
+- insufficient-context behavior is covered by tests
+- CLI can print answers and sources directly from this layer
 
 ## Prompt to give Codex
 
