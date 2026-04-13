@@ -6,7 +6,7 @@ Phase 2 - Text chunking
 
 ## Task
 
-Split normalized plain text into paragraph units.
+Add a sliding-window fallback for long paragraphs.
 
 ## Files to update
 
@@ -15,25 +15,24 @@ Split normalized plain text into paragraph units.
 
 ## Required behavior
 
-- build on top of `normalize_whitespace`
-- split text on blank-line paragraph boundaries
-- discard empty paragraphs
-- preserve paragraph order
-- return plain strings for now
+- build on top of `split_into_paragraphs`
+- keep short paragraphs unchanged
+- split long paragraphs into smaller text chunks
+- preserve original order
+- support configurable chunk size and overlap
 
 ## Constraints
 
-- keep the API simple and pure
-- do not implement sliding-window chunking yet
+- keep the API pure and deterministic
 - do not create `DocumentChunk` objects yet
-- add tests for empty input, single paragraph, and multiple paragraphs
+- do not add file loaders or embedding logic
+- add tests for short input, long input, and overlap behavior
 
 ## Done when
 
-- a paragraph splitter exists
-- paragraph order is preserved
-- tests pass
-- current normalization tests still pass
+- a long-paragraph splitter exists
+- overlap behavior is covered by tests
+- current normalization and paragraph-splitting tests still pass
 
 ## Prompt to give Codex
 

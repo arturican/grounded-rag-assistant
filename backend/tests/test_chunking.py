@@ -2,7 +2,7 @@
 
 import unittest
 
-from backend.app.chunking import normalize_whitespace
+from backend.app.chunking import normalize_whitespace, split_into_paragraphs
 
 
 class NormalizeWhitespaceTests(unittest.TestCase):
@@ -31,3 +31,25 @@ class NormalizeWhitespaceTests(unittest.TestCase):
         normalized = normalize_whitespace(text)
 
         self.assertEqual(normalized, "Alpha\nBeta\nGamma")
+
+
+class SplitIntoParagraphsTests(unittest.TestCase):
+    def test_split_into_paragraphs_returns_empty_list_for_empty_input(self) -> None:
+        paragraphs = split_into_paragraphs(" \n\t\r\n ")
+
+        self.assertEqual(paragraphs, [])
+
+    def test_split_into_paragraphs_returns_single_paragraph(self) -> None:
+        paragraphs = split_into_paragraphs("  Alpha line  \nBeta line  ")
+
+        self.assertEqual(paragraphs, ["Alpha line\nBeta line"])
+
+    def test_split_into_paragraphs_returns_multiple_paragraphs_in_order(self) -> None:
+        text = " First paragraph \r\n\r\n Second paragraph \n\n\n Third paragraph "
+
+        paragraphs = split_into_paragraphs(text)
+
+        self.assertEqual(
+            paragraphs,
+            ["First paragraph", "Second paragraph", "Third paragraph"],
+        )
