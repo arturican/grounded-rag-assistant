@@ -6,32 +6,34 @@ Phase 9 - Evaluation and quality
 
 ## Task
 
-Add a tiny retrieval-quality regression check for ranked results on fixed indexed chunks.
+Add one API-level regression test for the honest insufficient-context path on an unrelated query.
 
 ## Files to update
 
-- `backend/tests/test_retrieval.py`
-- `docs/ROADMAP.md` only if the evaluation shape needs clarification
-- `README.md` if a new local verification command is added
+- `backend/tests/test_api.py`
+- `README.md` only if the verification command changes
 
 ## Required behavior
 
-- define a fixed indexed-chunk set directly in tests
-- assert that the most relevant chunk ranks ahead of distractors for a stable query
-- assert that retrieval still preserves source metadata in returned results
+- build a tiny local index inside the test using the existing `/index` endpoint
+- call `/ask` with an unrelated query against that saved index
+- assert that the response keeps the honest-failure contract:
+  - `used_context` is `false`
+  - `sources` is an empty list
+  - `answer` contains the existing insufficient-context message
 - keep the check deterministic and independent from external models
 
 ## Constraints
 
-- stay within the current in-memory retrieval implementation
-- do not add a new evaluation framework yet
-- prefer one focused regression test over a broad harness
-- keep the sample data small and readable
+- reuse the current FakeEmbeddingProvider-based flow
+- do not add a new evaluation framework
+- prefer one focused regression test over broader API coverage changes
+- do not modify application behavior unless the test reveals a real bug
 
 ## Done when
 
-- retrieval quality is checked by at least one deterministic regression-style test
-- the verification command is documented if it changed
+- the API has a regression-style check for the insufficient-context branch
+- the narrow verification command is still accurate in the docs
 
 ## Prompt to give Codex
 

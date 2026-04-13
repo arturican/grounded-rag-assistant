@@ -58,7 +58,7 @@ If you want to understand the project commit by commit, start with:
 
 - `docs/commit-notes/README.md`
 
-That directory contains Russian-language notes for the main project commits:
+That directory contains Russian-language notes for the main project commits and the key documentation commits that explain them:
 
 - what was added in the commit
 - how the new code works
