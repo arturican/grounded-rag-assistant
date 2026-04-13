@@ -64,6 +64,31 @@ class ApiTests(unittest.TestCase):
             self.assertTrue(payload["used_context"])
             self.assertTrue(any(source["source"].endswith("alpha.txt") for source in payload["sources"]))
 
+    def test_ask_endpoint_returns_honest_failure_for_unrelated_query(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            docs_dir = workspace / "docs"
+            docs_dir.mkdir()
+            (docs_dir / "alpha.txt").write_text("Alpha facts live here.", encoding="utf-8")
+            index_path = workspace / "index.json"
+
+            index_response = self.client.post(
+                "/index",
+                json={"input_dir": str(docs_dir), "index_path": str(index_path)},
+            )
+            self.assertEqual(index_response.status_code, 200)
+
+            response = self.client.post(
+                "/ask",
+                json={"index_path": str(index_path), "query": "cat"},
+            )
+
+            self.assertEqual(response.status_code, 200)
+            payload = response.json()
+            self.assertFalse(payload["used_context"])
+            self.assertEqual(payload["sources"], [])
+            self.assertIn("could not answer from the retrieved context", payload["answer"])
+
     def test_ask_endpoint_validates_top_k(self) -> None:
         response = self.client.post(
             "/ask",

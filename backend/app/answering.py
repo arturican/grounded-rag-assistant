@@ -30,7 +30,7 @@ class GroundedAnswer:
 def build_grounded_answer(
     retrieved_chunks: list[RetrievedChunk],
     *,
-    min_score: float = 0.05,
+    min_score: float = 0.9,
     max_chunks: int = 3,
 ) -> GroundedAnswer:
     """Build a deterministic grounded answer from retrieved context only."""
