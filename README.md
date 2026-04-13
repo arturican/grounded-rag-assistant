@@ -78,4 +78,5 @@ cd /home/art/project/grounded-rag-assistant
 python3 -m unittest backend.tests.test_loaders -v
 python3 -m unittest backend.tests.test_chunking -v
 python3 -m unittest backend.tests.test_models -v
+python3 -m unittest backend.tests.test_embeddings -v
 ```

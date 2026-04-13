@@ -2,36 +2,36 @@
 
 ## Current milestone
 
-Phase 4 - Embeddings service
+Phase 5 - Chunk preparation
 
 ## Task
 
-Add an embeddings provider interface with a fake test implementation.
+Build `DocumentChunk` objects from loaded documents.
 
 ## Files to update
 
-- `backend/app/embeddings.py`
-- `backend/tests/test_embeddings.py`
+- `backend/app/ingestion.py`
+- `backend/tests/test_ingestion.py`
 
 ## Required behavior
 
-- define an interface for generating embeddings from text inputs
-- keep app code depending on the interface, not a concrete library
-- include a fake provider for tests
-- return deterministic vectors in tests
+- split normalized loaded documents into `DocumentChunk` records
+- preserve source path, page number, and chunk order
+- support plain text documents and page-aware PDF documents
+- produce stable chunk ids
 
 ## Constraints
 
 - keep the API pure and deterministic
-- do not wire in sentence-transformers yet
-- do not add embedding or retrieval logic
-- keep tests focused on interface behavior and simple invariants
+- build on top of existing loader and chunking layers
+- do not add retrieval or answer generation yet
+- keep tests focused on chunk metadata and ordering
 
 ## Done when
 
-- an embeddings provider contract exists
-- fake-provider behavior is covered by tests
-- the next storage step can consume the interface directly
+- chunk-building functions exist
+- source attribution is preserved in tests
+- retrieval storage can consume the resulting chunks directly
 
 ## Prompt to give Codex
 
