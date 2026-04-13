@@ -2,46 +2,38 @@
 
 ## Current milestone
 
-Phase 1 — Core domain model
+Phase 2 - Text chunking
 
 ## Task
 
-Create the first minimal domain models for the retrieval pipeline.
+Split normalized plain text into paragraph units.
 
-## Files to add
+## Files to update
 
-- `backend/app/models.py`
-- `backend/tests/test_models.py`
+- `backend/app/chunking.py`
+- `backend/tests/test_chunking.py`
 
-## Required models
+## Required behavior
 
-### DocumentChunk
-Fields:
-- `chunk_id: str`
-- `source: str`
-- `page: int | None`
-- `chunk_index: int`
-- `text: str`
-
-### RetrievedChunk
-Fields:
-- all `DocumentChunk` fields
-- `score: float`
+- build on top of `normalize_whitespace`
+- split text on blank-line paragraph boundaries
+- discard empty paragraphs
+- preserve paragraph order
+- return plain strings for now
 
 ## Constraints
 
-- use dataclasses or Pydantic, but keep it simple
-- text must not be empty or whitespace-only
-- `chunk_index` must be >= 0
-- `page` must be `None` or >= 1
-- add tests for valid and invalid creation
+- keep the API simple and pure
+- do not implement sliding-window chunking yet
+- do not create `DocumentChunk` objects yet
+- add tests for empty input, single paragraph, and multiple paragraphs
 
 ## Done when
 
-- the models exist
-- invariants are enforced
+- a paragraph splitter exists
+- paragraph order is preserved
 - tests pass
-- README or docs do not need updating unless the model shape changes
+- current normalization tests still pass
 
 ## Prompt to give Codex
 
