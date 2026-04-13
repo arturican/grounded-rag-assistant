@@ -48,7 +48,20 @@ PDF loading is currently designed behind an injectable backend in the loader lay
 - `docs/ROADMAP.md` — phased roadmap with acceptance criteria
 - `docs/AI_WORKFLOW.md` — best practices for coding with AI agents
 - `docs/NEXT_STEP.md` — the next small implementation step to execute
+- `docs/commit-notes/` — Russian-language study notes for key commits
 - `backend/` — application code and tests
+
+## Commit notes for study
+
+If you want to understand the project commit by commit, start with:
+
+- `docs/commit-notes/README.md`
+
+That directory contains Russian-language notes for the main project commits:
+
+- what was added in the commit
+- how the new code works
+- why that step matters in the overall RAG pipeline
 
 ## Working principle
 
@@ -69,26 +82,66 @@ Implement a CLI-only vertical slice:
 
 After the CLI slice is stable, expose the same flow through FastAPI.
 
+## Local setup
+
+Create a local virtual environment and install the project in editable mode:
+
+```bash
+cd /home/art/project/grounded-rag-assistant
+python3 -m venv .venv
+.venv/bin/python -m pip install -e .
+```
+
+If your system Python does not provide `venv`, create the same environment with `virtualenv` instead:
+
+```bash
+cd /home/art/project/grounded-rag-assistant
+python3 -m virtualenv .venv
+.venv/bin/python -m pip install -e .
+```
+
 ## Local verification
 
 Run the narrowest unit checks from WSL:
 
 ```bash
 cd /home/art/project/grounded-rag-assistant
-python3 -m unittest backend.tests.test_loaders -v
-python3 -m unittest backend.tests.test_chunking -v
-python3 -m unittest backend.tests.test_models -v
-python3 -m unittest backend.tests.test_embeddings -v
-python3 -m unittest backend.tests.test_ingestion -v
-python3 -m unittest backend.tests.test_retrieval -v
-python3 -m unittest backend.tests.test_answering -v
-python3 -m unittest backend.tests.test_cli -v
+.venv/bin/python -m unittest backend.tests.test_loaders -v
+.venv/bin/python -m unittest backend.tests.test_chunking -v
+.venv/bin/python -m unittest backend.tests.test_models -v
+.venv/bin/python -m unittest backend.tests.test_embeddings -v
+.venv/bin/python -m unittest backend.tests.test_ingestion -v
+.venv/bin/python -m unittest backend.tests.test_retrieval -v
+.venv/bin/python -m unittest backend.tests.test_answering -v
+.venv/bin/python -m unittest backend.tests.test_cli -v
+.venv/bin/python -m unittest backend.tests.test_api -v
 ```
 
 Run the current CLI slice:
 
 ```bash
 cd /home/art/project/grounded-rag-assistant
-python3 -m backend.app.cli index ./sample_docs ./local_index.json
-python3 -m backend.app.cli ask ./local_index.json "Your question here"
+.venv/bin/python -m backend.app.cli index ./sample_docs ./local_index.json
+.venv/bin/python -m backend.app.cli ask ./local_index.json "Your question here"
+```
+
+Run the API locally:
+
+```bash
+cd /home/art/project/grounded-rag-assistant
+.venv/bin/python -m uvicorn backend.app.api:app --reload
+```
+
+Verify the API endpoints:
+
+```bash
+cd /home/art/project/grounded-rag-assistant
+.venv/bin/python -m unittest backend.tests.test_api -v
+curl http://127.0.0.1:8000/health
+curl -X POST http://127.0.0.1:8000/index \
+  -H "Content-Type: application/json" \
+  -d '{"input_dir":"./sample_docs","index_path":"./local_index.json"}'
+curl -X POST http://127.0.0.1:8000/ask \
+  -H "Content-Type: application/json" \
+  -d '{"index_path":"./local_index.json","query":"Your question here"}'
 ```
