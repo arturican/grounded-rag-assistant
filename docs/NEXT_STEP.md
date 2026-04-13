@@ -6,7 +6,7 @@ Phase 3 - Document loaders
 
 ## Task
 
-Add a markdown `.md` loader.
+Add a dispatch function for supported local text formats.
 
 ## Files to update
 
@@ -15,25 +15,24 @@ Add a markdown `.md` loader.
 
 ## Required behavior
 
-- load UTF-8 markdown files from local storage
-- return normalized text ready for chunking
-- preserve the source path in returned metadata
-- fail with a clear error for missing files
+- route supported source files to the correct loader
+- support `.txt` and `.md`
+- return the same normalized loaded-document shape
+- fail clearly for unsupported file types
 
 ## Constraints
 
 - keep the API pure and deterministic
-- build on top of the existing plain-text loader pattern
-- support only `.md` in this step
+- build on top of the existing loader functions
 - do not add PDF parsing yet
 - do not add embedding or retrieval logic
-- add tests for successful load and missing-file behavior
+- add tests for `.txt`, `.md`, and unsupported-extension behavior
 
 ## Done when
 
-- an MD loader exists
-- loader behavior is covered by tests
-- the loaded text is normalized consistently for downstream chunking
+- a `load_document` entry point exists
+- dispatch behavior is covered by tests
+- supported formats share one stable return shape
 
 ## Prompt to give Codex
 

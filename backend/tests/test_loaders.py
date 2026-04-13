@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from backend.app.loaders import load_text_file
+from backend.app.loaders import load_markdown_file, load_text_file
 
 
 class LoadTextFileTests(unittest.TestCase):
@@ -32,3 +32,30 @@ class LoadTextFileTests(unittest.TestCase):
 
             with self.assertRaisesRegex(ValueError, "only .txt files are supported"):
                 load_text_file(source_path)
+
+
+class LoadMarkdownFileTests(unittest.TestCase):
+    def test_load_markdown_file_returns_normalized_text_and_source_path(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source_path = Path(temp_dir) / "notes.md"
+            source_path.write_text("  # Title \r\n\r\n Body line  \r\n", encoding="utf-8")
+
+            loaded = load_markdown_file(source_path)
+
+            self.assertEqual(loaded.source_path, str(source_path))
+            self.assertEqual(loaded.text, "# Title\n\nBody line")
+
+    def test_load_markdown_file_raises_clear_error_for_missing_file(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            missing_path = Path(temp_dir) / "missing.md"
+
+            with self.assertRaisesRegex(FileNotFoundError, "markdown file not found"):
+                load_markdown_file(missing_path)
+
+    def test_load_markdown_file_rejects_non_md_extensions(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source_path = Path(temp_dir) / "notes.txt"
+            source_path.write_text("plain text", encoding="utf-8")
+
+            with self.assertRaisesRegex(ValueError, r"only \.md files are supported"):
+                load_markdown_file(source_path)
