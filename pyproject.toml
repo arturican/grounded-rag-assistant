@@ -1,0 +1,19 @@
+[project]
+name = "grounded-rag-assistant"
+version = "0.1.0"
+description = "A grounded RAG assistant over user documents"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+
+autofix = false
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
