@@ -7,6 +7,50 @@ from backend.app.models import RetrievedChunk
 
 
 class BuildGroundedAnswerTests(unittest.TestCase):
+    def test_build_grounded_answer_regression_uses_only_top_ranked_context(self) -> None:
+        chunks = [
+            RetrievedChunk(
+                chunk_id="chunk-1",
+                source="policies.md",
+                page=None,
+                chunk_index=0,
+                text="The support window is 30 days from purchase.",
+                score=0.96,
+            ),
+            RetrievedChunk(
+                chunk_id="chunk-2",
+                source="faq.md",
+                page=None,
+                chunk_index=1,
+                text="Refund requests must include the original order number.",
+                score=0.88,
+            ),
+            RetrievedChunk(
+                chunk_id="chunk-3",
+                source="shipping.md",
+                page=None,
+                chunk_index=2,
+                text="Standard shipping takes 5 business days.",
+                score=0.73,
+            ),
+        ]
+
+        answer = build_grounded_answer(chunks, min_score=0.1, max_chunks=2)
+
+        self.assertTrue(answer.used_context)
+        self.assertEqual(
+            answer.answer,
+            (
+                "The support window is 30 days from purchase.\n\n"
+                "Refund requests must include the original order number."
+            ),
+        )
+        self.assertNotIn("Standard shipping takes 5 business days.", answer.answer)
+        self.assertEqual(
+            [source.chunk_id for source in answer.sources],
+            ["chunk-1", "chunk-2"],
+        )
+
     def test_build_grounded_answer_joins_top_chunks_when_context_is_sufficient(self) -> None:
         chunks = [
             RetrievedChunk(
