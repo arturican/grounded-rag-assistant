@@ -48,6 +48,7 @@ PDF loading is currently designed behind an injectable backend in the loader lay
 - `docs/ROADMAP.md` — phased roadmap with acceptance criteria
 - `docs/AI_WORKFLOW.md` — best practices for coding with AI agents
 - `docs/NEXT_STEP.md` — the next small implementation step to execute
+- `docs/ARCHITECTURE_RU.md` — Russian walkthrough of the current project architecture
 - `docs/commit-notes/` — Russian-language study notes for key commits
 - `backend/` — application code and tests
 
