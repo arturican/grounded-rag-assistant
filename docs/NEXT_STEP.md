@@ -6,7 +6,7 @@ Phase 3 - Document loaders
 
 ## Task
 
-Add a plain-text `.txt` loader.
+Add a markdown `.md` loader.
 
 ## Files to update
 
@@ -15,7 +15,7 @@ Add a plain-text `.txt` loader.
 
 ## Required behavior
 
-- load UTF-8 text files from local storage
+- load UTF-8 markdown files from local storage
 - return normalized text ready for chunking
 - preserve the source path in returned metadata
 - fail with a clear error for missing files
@@ -23,14 +23,15 @@ Add a plain-text `.txt` loader.
 ## Constraints
 
 - keep the API pure and deterministic
-- support only `.txt` in this step
-- do not add markdown or PDF parsing yet
+- build on top of the existing plain-text loader pattern
+- support only `.md` in this step
+- do not add PDF parsing yet
 - do not add embedding or retrieval logic
 - add tests for successful load and missing-file behavior
 
 ## Done when
 
-- a TXT loader exists
+- an MD loader exists
 - loader behavior is covered by tests
 - the loaded text is normalized consistently for downstream chunking
 
