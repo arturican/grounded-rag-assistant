@@ -6,33 +6,33 @@ Phase 3 - Document loaders
 
 ## Task
 
-Add a dispatch function for supported local text formats.
+Add a PDF loader interface and document the dependency choice.
 
 ## Files to update
 
 - `backend/app/loaders.py`
 - `backend/tests/test_loaders.py`
+- `docs/ROADMAP.md` or `README.md` if the PDF parsing approach needs clarification
 
 ## Required behavior
 
-- route supported source files to the correct loader
-- support `.txt` and `.md`
-- return the same normalized loaded-document shape
-- fail clearly for unsupported file types
+- load text from PDF files through a dedicated loader function
+- preserve page numbers in the returned structure
+- keep the return shape compatible with the existing loader layer
+- fail clearly when the PDF backend is unavailable
 
 ## Constraints
 
 - keep the API pure and deterministic
-- build on top of the existing loader functions
-- do not add PDF parsing yet
+- make the dependency choice explicit before broadening scope
 - do not add embedding or retrieval logic
-- add tests for `.txt`, `.md`, and unsupported-extension behavior
+- keep tests focused on the loader contract, using fakes or fixtures if needed
 
 ## Done when
 
-- a `load_document` entry point exists
-- dispatch behavior is covered by tests
-- supported formats share one stable return shape
+- a PDF loader entry point exists
+- page-aware return data is covered by tests
+- the dependency and verification path are documented
 
 ## Prompt to give Codex
 

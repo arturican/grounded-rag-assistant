@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from backend.app.loaders import load_markdown_file, load_text_file
+from backend.app.loaders import load_document, load_markdown_file, load_text_file
 
 
 class LoadTextFileTests(unittest.TestCase):
@@ -59,3 +59,33 @@ class LoadMarkdownFileTests(unittest.TestCase):
 
             with self.assertRaisesRegex(ValueError, r"only \.md files are supported"):
                 load_markdown_file(source_path)
+
+
+class LoadDocumentTests(unittest.TestCase):
+    def test_load_document_dispatches_txt_files(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source_path = Path(temp_dir) / "notes.txt"
+            source_path.write_text("Alpha\r\n\r\nBeta", encoding="utf-8")
+
+            loaded = load_document(source_path)
+
+            self.assertEqual(loaded.source_path, str(source_path))
+            self.assertEqual(loaded.text, "Alpha\n\nBeta")
+
+    def test_load_document_dispatches_md_files(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source_path = Path(temp_dir) / "notes.md"
+            source_path.write_text("# Title\r\n\r\nBody", encoding="utf-8")
+
+            loaded = load_document(source_path)
+
+            self.assertEqual(loaded.source_path, str(source_path))
+            self.assertEqual(loaded.text, "# Title\n\nBody")
+
+    def test_load_document_rejects_unsupported_extensions(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source_path = Path(temp_dir) / "notes.pdf"
+            source_path.write_text("not really a pdf", encoding="utf-8")
+
+            with self.assertRaisesRegex(ValueError, r"unsupported file type: \.pdf"):
+                load_document(source_path)

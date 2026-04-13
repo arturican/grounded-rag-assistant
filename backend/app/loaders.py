@@ -14,6 +14,20 @@ class LoadedTextDocument:
     text: str
 
 
+def load_document(path: str | Path) -> LoadedTextDocument:
+    """Load a supported local document into the common normalized shape."""
+
+    source_path = Path(path)
+    suffix = source_path.suffix.lower()
+
+    if suffix == ".txt":
+        return load_text_file(source_path)
+    if suffix == ".md":
+        return load_markdown_file(source_path)
+
+    raise ValueError(f"unsupported file type: {suffix or '<none>'}")
+
+
 def load_text_file(path: str | Path) -> LoadedTextDocument:
     """Load and normalize a UTF-8 plain-text file from local storage."""
 
