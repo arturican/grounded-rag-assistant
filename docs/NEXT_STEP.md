@@ -2,36 +2,37 @@
 
 ## Current milestone
 
-Phase 5 - Chunk preparation
+Phase 5 - Vector storage and retrieval
 
 ## Task
 
-Build `DocumentChunk` objects from loaded documents.
+Add an in-memory retrieval store over embeddings.
 
 ## Files to update
 
-- `backend/app/ingestion.py`
-- `backend/tests/test_ingestion.py`
+- `backend/app/retrieval.py`
+- `backend/tests/test_retrieval.py`
 
 ## Required behavior
 
-- split normalized loaded documents into `DocumentChunk` records
-- preserve source path, page number, and chunk order
-- support plain text documents and page-aware PDF documents
-- produce stable chunk ids
+- store chunk embeddings with metadata
+- retrieve top-k relevant chunks for a query embedding
+- return `RetrievedChunk` records ranked by score
+- keep ranking deterministic for tests
 
 ## Constraints
 
 - keep the API pure and deterministic
-- build on top of existing loader and chunking layers
-- do not add retrieval or answer generation yet
-- keep tests focused on chunk metadata and ordering
+- build on top of `DocumentChunk` and `EmbeddingProvider`
+- use an in-memory implementation before adding FAISS
+- do not add answer generation yet
+- keep tests focused on ranking and metadata preservation
 
 ## Done when
 
-- chunk-building functions exist
-- source attribution is preserved in tests
-- retrieval storage can consume the resulting chunks directly
+- a retrieval store exists
+- ranked retrieval is covered by tests
+- the answer layer can consume retrieved chunks directly
 
 ## Prompt to give Codex
 
