@@ -66,3 +66,13 @@ Implement a CLI-only vertical slice:
 - print answer + sources
 
 After the CLI slice is stable, expose the same flow through FastAPI.
+
+## Local verification
+
+Run the narrowest unit checks from WSL:
+
+```bash
+cd /home/art/project/grounded-rag-assistant
+python3 -m unittest backend.tests.test_chunking -v
+python3 -m unittest backend.tests.test_models -v
+```

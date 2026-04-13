@@ -2,37 +2,37 @@
 
 ## Current milestone
 
-Phase 2 - Text chunking
+Phase 3 - Document loaders
 
 ## Task
 
-Add a sliding-window fallback for long paragraphs.
+Add a plain-text `.txt` loader.
 
 ## Files to update
 
-- `backend/app/chunking.py`
-- `backend/tests/test_chunking.py`
+- `backend/app/loaders.py`
+- `backend/tests/test_loaders.py`
 
 ## Required behavior
 
-- build on top of `split_into_paragraphs`
-- keep short paragraphs unchanged
-- split long paragraphs into smaller text chunks
-- preserve original order
-- support configurable chunk size and overlap
+- load UTF-8 text files from local storage
+- return normalized text ready for chunking
+- preserve the source path in returned metadata
+- fail with a clear error for missing files
 
 ## Constraints
 
 - keep the API pure and deterministic
-- do not create `DocumentChunk` objects yet
-- do not add file loaders or embedding logic
-- add tests for short input, long input, and overlap behavior
+- support only `.txt` in this step
+- do not add markdown or PDF parsing yet
+- do not add embedding or retrieval logic
+- add tests for successful load and missing-file behavior
 
 ## Done when
 
-- a long-paragraph splitter exists
-- overlap behavior is covered by tests
-- current normalization and paragraph-splitting tests still pass
+- a TXT loader exists
+- loader behavior is covered by tests
+- the loaded text is normalized consistently for downstream chunking
 
 ## Prompt to give Codex
 

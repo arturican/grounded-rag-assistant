@@ -2,7 +2,7 @@
 
 import unittest
 
-from backend.app.chunking import normalize_whitespace, split_into_paragraphs
+from backend.app.chunking import normalize_whitespace, split_into_chunks, split_into_paragraphs
 
 
 class NormalizeWhitespaceTests(unittest.TestCase):
@@ -53,3 +53,30 @@ class SplitIntoParagraphsTests(unittest.TestCase):
             paragraphs,
             ["First paragraph", "Second paragraph", "Third paragraph"],
         )
+
+
+class SplitIntoChunksTests(unittest.TestCase):
+    def test_split_into_chunks_keeps_short_paragraphs_unchanged(self) -> None:
+        text = "Alpha paragraph.\n\nBeta paragraph."
+
+        chunks = split_into_chunks(text, chunk_size=50, overlap=10)
+
+        self.assertEqual(chunks, ["Alpha paragraph.", "Beta paragraph."])
+
+    def test_split_into_chunks_splits_long_paragraph_with_overlap(self) -> None:
+        text = "ABCDEFGHIJ"
+
+        chunks = split_into_chunks(text, chunk_size=4, overlap=1)
+
+        self.assertEqual(chunks, ["ABCD", "DEFG", "GHIJ"])
+
+    def test_split_into_chunks_preserves_paragraph_order_when_only_some_are_split(self) -> None:
+        text = "Hey\n\nABCDEFGHIJ"
+
+        chunks = split_into_chunks(text, chunk_size=4, overlap=1)
+
+        self.assertEqual(chunks, ["Hey", "ABCD", "DEFG", "GHIJ"])
+
+    def test_split_into_chunks_rejects_overlap_equal_to_chunk_size(self) -> None:
+        with self.assertRaisesRegex(ValueError, "overlap must be smaller than chunk_size"):
+            split_into_chunks("Alpha", chunk_size=5, overlap=5)
