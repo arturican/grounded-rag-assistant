@@ -2,36 +2,37 @@
 
 ## Current milestone
 
-Phase 6 - Grounded answer generation
+Phase 7 - CLI vertical slice
 
 ## Task
 
-Build deterministic grounded answer assembly from retrieved chunks.
+Build CLI index/ask commands with local JSON persistence.
 
 ## Files to update
 
-- `backend/app/answering.py`
-- `backend/tests/test_answering.py`
+- `backend/app/cli.py`
+- `backend/app/index_store.py`
+- `backend/tests/test_cli.py`
 
 ## Required behavior
 
-- answer only from retrieved chunk text
-- return source references with file and page metadata when available
-- handle insufficient-context cases honestly
-- keep output deterministic for tests
+- index supported local documents from a folder into a local file
+- load the saved index and answer a user query from retrieved context
+- print answer text and sources in a readable CLI format
+- keep the vertical slice runnable without external services
 
 ## Constraints
 
 - keep the API pure and deterministic
-- build on top of `RetrievedChunk`
-- do not call external LLMs yet
-- keep tests focused on answer selection and source formatting
+- build on top of the existing loader, ingestion, retrieval, and answering layers
+- use simple local persistence before adding FastAPI
+- keep tests focused on CLI behavior and saved-index loading
 
 ## Done when
 
-- an answer assembly layer exists
-- insufficient-context behavior is covered by tests
-- CLI can print answers and sources directly from this layer
+- `index` and `ask` commands exist
+- a local end-to-end CLI path is covered by tests
+- README documents the local commands
 
 ## Prompt to give Codex
 
