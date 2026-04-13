@@ -82,4 +82,13 @@ python3 -m unittest backend.tests.test_embeddings -v
 python3 -m unittest backend.tests.test_ingestion -v
 python3 -m unittest backend.tests.test_retrieval -v
 python3 -m unittest backend.tests.test_answering -v
+python3 -m unittest backend.tests.test_cli -v
+```
+
+Run the current CLI slice:
+
+```bash
+cd /home/art/project/grounded-rag-assistant
+python3 -m backend.app.cli index ./sample_docs ./local_index.json
+python3 -m backend.app.cli ask ./local_index.json "Your question here"
 ```

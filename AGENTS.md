@@ -11,6 +11,7 @@ Build a clean, testable RAG system that searches user documents and answers only
 - Read `docs/PROJECT_BRIEF.md`, `docs/ROADMAP.md`, and `docs/NEXT_STEP.md` before coding.
 - Keep `AGENTS.md` short; detailed project truth lives in `docs/`.
 - Update docs when behavior, architecture, or workflow changes.
+- Keep `docs/NEXT_STEP.md` aligned with the actual next runnable step after each completed change.
 
 ## Coding rules
 
@@ -51,3 +52,4 @@ A task is done only when all of the following are true:
 - Show the intended file changes before broad refactors.
 - Prefer additive changes over risky rewrites.
 - When blocked, write down the blocker and the smallest safe next move.
+- For CLI or workflow changes, update `README.md` with the exact local commands used for verification.

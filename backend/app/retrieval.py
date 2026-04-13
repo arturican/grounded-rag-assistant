@@ -32,6 +32,16 @@ class InMemoryRetrievalStore:
         for chunk, embedding in zip(chunks, embeddings, strict=True):
             self._indexed_chunks.append(IndexedChunk(chunk=chunk, embedding=embedding))
 
+    def load_indexed_chunks(self, indexed_chunks: list[IndexedChunk]) -> None:
+        """Load precomputed indexed chunks into the store."""
+
+        self._indexed_chunks.extend(indexed_chunks)
+
+    def export_indexed_chunks(self) -> list[IndexedChunk]:
+        """Return a snapshot of the indexed chunks."""
+
+        return list(self._indexed_chunks)
+
     def search(self, query: str, *, top_k: int = 3) -> list[RetrievedChunk]:
         """Return the most relevant chunks for a query."""
 

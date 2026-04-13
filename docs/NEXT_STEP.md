@@ -2,37 +2,38 @@
 
 ## Current milestone
 
-Phase 7 - CLI vertical slice
+Phase 8 - FastAPI layer
 
 ## Task
 
-Build CLI index/ask commands with local JSON persistence.
+Expose the current RAG slice through a small HTTP API.
 
 ## Files to update
 
-- `backend/app/cli.py`
-- `backend/app/index_store.py`
-- `backend/tests/test_cli.py`
+- `backend/app/api.py`
+- `backend/tests/test_api.py`
+- `pyproject.toml` if an API dependency needs to be declared
 
 ## Required behavior
 
-- index supported local documents from a folder into a local file
-- load the saved index and answer a user query from retrieved context
-- print answer text and sources in a readable CLI format
-- keep the vertical slice runnable without external services
+- expose `/health`
+- expose `/index`
+- expose `/ask`
+- reuse the existing local RAG pipeline behind HTTP handlers
 
 ## Constraints
 
 - keep the API pure and deterministic
-- build on top of the existing loader, ingestion, retrieval, and answering layers
-- use simple local persistence before adding FastAPI
-- keep tests focused on CLI behavior and saved-index loading
+- build on top of the existing CLI-capable pipeline
+- keep request and response shapes explicit
+- add only the minimal dependency required for the API layer
+- keep tests focused on endpoint behavior
 
 ## Done when
 
-- `index` and `ask` commands exist
-- a local end-to-end CLI path is covered by tests
-- README documents the local commands
+- the HTTP layer can index docs and answer questions locally
+- API behavior is covered by tests
+- README documents how to run the API locally
 
 ## Prompt to give Codex
 
