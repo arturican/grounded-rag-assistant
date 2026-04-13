@@ -24,6 +24,7 @@
 - [`7d68951-in-memory-retrieval-store.md`](./7d68951-in-memory-retrieval-store.md) - локальное хранилище и поиск
 - [`8b9d11d-grounded-answer-assembly.md`](./8b9d11d-grounded-answer-assembly.md) - сборка grounded-ответа
 - [`ffd8742-local-cli-vertical-slice.md`](./ffd8742-local-cli-vertical-slice.md) - первый рабочий CLI-срез
+- [`451ed52-fastapi-layer.md`](./451ed52-fastapi-layer.md) - HTTP API для текущего локального RAG-среза
 
 Как поддерживать раздел дальше:
 
