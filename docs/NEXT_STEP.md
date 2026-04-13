@@ -2,37 +2,36 @@
 
 ## Current milestone
 
-Phase 3 - Document loaders
+Phase 4 - Embeddings service
 
 ## Task
 
-Add a PDF loader interface and document the dependency choice.
+Add an embeddings provider interface with a fake test implementation.
 
 ## Files to update
 
-- `backend/app/loaders.py`
-- `backend/tests/test_loaders.py`
-- `docs/ROADMAP.md` or `README.md` if the PDF parsing approach needs clarification
+- `backend/app/embeddings.py`
+- `backend/tests/test_embeddings.py`
 
 ## Required behavior
 
-- load text from PDF files through a dedicated loader function
-- preserve page numbers in the returned structure
-- keep the return shape compatible with the existing loader layer
-- fail clearly when the PDF backend is unavailable
+- define an interface for generating embeddings from text inputs
+- keep app code depending on the interface, not a concrete library
+- include a fake provider for tests
+- return deterministic vectors in tests
 
 ## Constraints
 
 - keep the API pure and deterministic
-- make the dependency choice explicit before broadening scope
+- do not wire in sentence-transformers yet
 - do not add embedding or retrieval logic
-- keep tests focused on the loader contract, using fakes or fixtures if needed
+- keep tests focused on interface behavior and simple invariants
 
 ## Done when
 
-- a PDF loader entry point exists
-- page-aware return data is covered by tests
-- the dependency and verification path are documented
+- an embeddings provider contract exists
+- fake-provider behavior is covered by tests
+- the next storage step can consume the interface directly
 
 ## Prompt to give Codex
 

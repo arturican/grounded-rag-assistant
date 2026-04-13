@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from backend.app.loaders import load_document, load_markdown_file, load_text_file
+from backend.app.loaders import load_document, load_markdown_file, load_pdf_file, load_text_file
 
 
 class LoadTextFileTests(unittest.TestCase):
@@ -84,8 +84,52 @@ class LoadDocumentTests(unittest.TestCase):
 
     def test_load_document_rejects_unsupported_extensions(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
-            source_path = Path(temp_dir) / "notes.pdf"
-            source_path.write_text("not really a pdf", encoding="utf-8")
+            source_path = Path(temp_dir) / "notes.rtf"
+            source_path.write_text("unsupported", encoding="utf-8")
 
-            with self.assertRaisesRegex(ValueError, r"unsupported file type: \.pdf"):
+            with self.assertRaisesRegex(ValueError, r"unsupported file type: \.rtf"):
+                load_document(source_path)
+
+
+class LoadPdfFileTests(unittest.TestCase):
+    def test_load_pdf_file_returns_combined_text_and_page_metadata(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source_path = Path(temp_dir) / "notes.pdf"
+            source_path.write_text("placeholder", encoding="utf-8")
+
+            loaded = load_pdf_file(
+                source_path,
+                extractor=lambda _: ["  First page \r\n", "Second page\r\n\r\n Tail "],
+            )
+
+            self.assertEqual(loaded.source_path, str(source_path))
+            self.assertEqual(loaded.text, "First page\n\nSecond page\n\nTail")
+            self.assertIsNotNone(loaded.pages)
+            assert loaded.pages is not None
+            self.assertEqual(loaded.pages[0].page_number, 1)
+            self.assertEqual(loaded.pages[0].text, "First page")
+            self.assertEqual(loaded.pages[1].page_number, 2)
+            self.assertEqual(loaded.pages[1].text, "Second page\n\nTail")
+
+    def test_load_pdf_file_raises_clear_error_for_missing_file(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            missing_path = Path(temp_dir) / "missing.pdf"
+
+            with self.assertRaisesRegex(FileNotFoundError, "pdf file not found"):
+                load_pdf_file(missing_path, extractor=lambda _: [])
+
+    def test_load_pdf_file_requires_backend(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source_path = Path(temp_dir) / "notes.pdf"
+            source_path.write_text("placeholder", encoding="utf-8")
+
+            with self.assertRaisesRegex(RuntimeError, "pdf backend is unavailable"):
+                load_pdf_file(source_path)
+
+    def test_load_document_routes_pdf_files_to_pdf_loader(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source_path = Path(temp_dir) / "notes.pdf"
+            source_path.write_text("placeholder", encoding="utf-8")
+
+            with self.assertRaisesRegex(RuntimeError, "pdf backend is unavailable"):
                 load_document(source_path)

@@ -38,6 +38,8 @@ Upload documents, index them, ask a question, get an answer with sources.
 - pytest for tests
 - Ruff for linting
 
+PDF loading is currently designed behind an injectable backend in the loader layer, so the parser choice stays isolated from ingestion logic.
+
 ## Repository map
 
 - `AGENTS.md` — instructions for Codex and other coding agents
