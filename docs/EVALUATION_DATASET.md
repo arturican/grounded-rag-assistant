@@ -98,6 +98,7 @@ cd /home/artur/project/grounded-rag-assistant
 python3 -m backend.app.cli index ./sample_docs/text_only ./local_index.json
 python3 -m backend.app.cli ask ./local_index.json "Where should billing questions be routed?"
 python3 -m backend.app.cli ask ./local_index.json "Who owns rollback decisions for the Atlas pilot?"
+python3 -m backend.app.cli ask ./local_index.json "What is the company travel reimbursement limit?"
 ```
 
 Use the dataset file itself during manual review to check:

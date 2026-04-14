@@ -44,3 +44,16 @@ class EvaluationDatasetTests(unittest.TestCase):
 
         self.assertGreater(len(indexed_chunk_ids), 0)
         self.assertTrue(any("finance-ops@lighthouse.example" in line for line in answer_lines))
+        self.assertTrue(any("support_playbook.txt" in line for line in answer_lines))
+
+    def test_unrelated_question_fails_honestly_for_dataset_q10(self) -> None:
+        with TemporaryDirectory() as temp_dir:
+            index_path = Path(temp_dir) / "sample-index.json"
+
+            index_directory(TEXT_ONLY_ROOT, index_path)
+            answer_lines = ask_index(index_path, "What is the company travel reimbursement limit?")
+
+        self.assertTrue(
+            any("I could not answer from the retrieved context" in line for line in answer_lines)
+        )
+        self.assertFalse(any(line.startswith("- ") for line in answer_lines))
