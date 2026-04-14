@@ -57,3 +57,27 @@ class CliVerticalSliceTests(unittest.TestCase):
             self.assertEqual(ask_exit_code, 0)
             self.assertIn("Indexed", index_output.getvalue())
             self.assertIn("Answer: Alpha facts live here.", ask_output.getvalue())
+
+    def test_run_cli_hides_sources_when_context_is_insufficient(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            docs_dir = workspace / "docs"
+            docs_dir.mkdir()
+            (docs_dir / "alpha.txt").write_text("Alpha facts live here.", encoding="utf-8")
+            index_path = workspace / "index.json"
+
+            index_output = io.StringIO()
+            ask_output = io.StringIO()
+
+            index_exit_code = run_cli(["index", str(docs_dir), str(index_path)], stdout=index_output)
+            ask_exit_code = run_cli(["ask", str(index_path), ""], stdout=ask_output)
+
+            rendered_output = ask_output.getvalue()
+
+            self.assertEqual(index_exit_code, 0)
+            self.assertEqual(ask_exit_code, 0)
+            self.assertIn(
+                "Answer: I could not answer from the retrieved context.",
+                rendered_output,
+            )
+            self.assertNotIn("Sources:", rendered_output)
