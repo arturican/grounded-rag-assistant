@@ -58,7 +58,7 @@ class CliVerticalSliceTests(unittest.TestCase):
             self.assertIn("Indexed", index_output.getvalue())
             self.assertIn("Answer: Alpha facts live here.", ask_output.getvalue())
 
-    def test_run_cli_hides_sources_when_context_is_insufficient(self) -> None:
+    def test_run_cli_hides_sources_for_unrelated_query(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = Path(temp_dir)
             docs_dir = workspace / "docs"
@@ -70,7 +70,10 @@ class CliVerticalSliceTests(unittest.TestCase):
             ask_output = io.StringIO()
 
             index_exit_code = run_cli(["index", str(docs_dir), str(index_path)], stdout=index_output)
-            ask_exit_code = run_cli(["ask", str(index_path), ""], stdout=ask_output)
+            ask_exit_code = run_cli(
+                ["ask", str(index_path), "cat"],
+                stdout=ask_output,
+            )
 
             rendered_output = ask_output.getvalue()
 

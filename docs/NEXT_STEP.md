@@ -6,32 +6,33 @@ Phase 9 - Evaluation and quality
 
 ## Task
 
-Add one CLI-level regression test for the honest insufficient-context path on an unrelated query.
+Add one retrieval-level regression test for deterministic ordering when similarity scores are equal.
 
 ## Files to update
 
-- `backend/tests/test_cli.py`
+- `backend/tests/test_retrieval.py`
 - `README.md` only if the verification command changes
 
 ## Required behavior
 
-- build a tiny local index inside the test using the existing CLI indexing path
-- call the CLI `ask` flow with an unrelated query against that saved index
-- assert that the rendered output keeps the honest-failure contract:
-  - the answer line contains the existing insufficient-context message
-  - no `Sources:` block is printed
-- keep the check deterministic and independent from external models
+- build the regression around `FixedEvaluationEmbeddingProvider` or another existing deterministic test helper
+- create at least two chunks whose similarity to the query is exactly the same
+- assert that `InMemoryRetrievalStore.search()` keeps the existing stable tie-break order:
+  - higher score first
+  - for equal scores, lower `chunk_index` first
+  - if needed, `chunk_id` remains the final deterministic fallback
+- keep the check independent from external models and filesystem state
 
 ## Constraints
 
-- reuse the current FakeEmbeddingProvider-based flow
+- do not change retrieval behavior unless the new test reveals a real bug
 - do not add a new evaluation framework
-- prefer one focused regression test over broader CLI coverage changes
-- do not modify application behavior unless the test reveals a real bug
+- prefer one focused regression test over broader retrieval refactors
+- reuse existing test patterns already present in `backend/tests/test_retrieval.py`
 
 ## Done when
 
-- the CLI has a regression-style check for the insufficient-context branch
+- retrieval has an explicit regression-style check for deterministic ordering on score ties
 - the narrow verification command is still accurate in the docs
 
 ## Prompt to give Codex
