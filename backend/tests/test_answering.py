@@ -51,6 +51,36 @@ class BuildGroundedAnswerTests(unittest.TestCase):
             ["chunk-1", "chunk-2"],
         )
 
+    def test_build_grounded_answer_regression_limits_answer_to_top_chunk_when_max_chunks_is_one(self) -> None:
+        chunks = [
+            RetrievedChunk(
+                chunk_id="chunk-top",
+                source="policies.md",
+                page=2,
+                chunk_index=0,
+                text="The refund window is 30 days from purchase.",
+                score=0.97,
+            ),
+            RetrievedChunk(
+                chunk_id="chunk-lower",
+                source="faq.md",
+                page=None,
+                chunk_index=1,
+                text="Refunds require the original receipt number.",
+                score=0.91,
+            ),
+        ]
+
+        answer = build_grounded_answer(chunks, min_score=0.1, max_chunks=1)
+
+        self.assertTrue(answer.used_context)
+        self.assertEqual(answer.answer, "The refund window is 30 days from purchase.")
+        self.assertNotIn("Refunds require the original receipt number.", answer.answer)
+        self.assertEqual(len(answer.sources), 1)
+        self.assertEqual(answer.sources[0].chunk_id, "chunk-top")
+        self.assertEqual(answer.sources[0].source, "policies.md")
+        self.assertEqual(answer.sources[0].page, 2)
+
     def test_build_grounded_answer_joins_top_chunks_when_context_is_sufficient(self) -> None:
         chunks = [
             RetrievedChunk(
