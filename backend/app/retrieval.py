@@ -32,6 +32,7 @@ class InMemoryRetrievalStore:
         for chunk, embedding in zip(chunks, embeddings, strict=True):
             self._indexed_chunks.append(IndexedChunk(chunk=chunk, embedding=embedding))
 
+
     def load_indexed_chunks(self, indexed_chunks: list[IndexedChunk]) -> None:
         """Load precomputed indexed chunks into the store."""
 

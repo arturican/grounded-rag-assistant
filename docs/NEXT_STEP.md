@@ -6,36 +6,36 @@ Phase 9 - Evaluation and quality
 
 ## Task
 
-Verify that the API `ask` response preserves page metadata in returned sources.
+Create a small sample corpus and a set of evaluation questions for manual/automated verification.
 
 ## Files to update
 
-- `backend/tests/test_api.py`
+- `sample_docs/` (new directory)
+- `docs/EVALUATION_DATASET.md` (new file)
 
 ## Required behavior
 
-- build or patch a tiny saved index entry whose source metadata includes a concrete page number
-- call the `/ask` endpoint and inspect the structured JSON response
-- verify that the first returned source keeps both `page` and `chunk_id`
-- keep the test narrow and focused on API-visible source metadata, not formatting strings
+- provide 3-5 sample documents (.txt, .md, .pdf) with overlapping facts
+- define 5-10 evaluation questions with expected grounded answers and source references
+- this dataset will be used to verify retrieval recall and answer precision in future steps
 
 ## Constraints
 
-- reuse the existing FastAPI test patterns in `backend/tests/test_api.py`
-- do not change API behavior unless the regression test reveals a real bug
-- avoid adding new dependencies or broader API fixtures
+- keep sample documents small to ensure fast test runs
+- ensure documents are realistic for the RAG use case
+- PDF should be included to test page-aware retrieval
 
 ## Done when
 
-- API has a regression test for page-aware source metadata
-- the narrow API test passes in the project test environment
+- `sample_docs/` directory contains verification files
+- `docs/EVALUATION_DATASET.md` documents the expected behavior for each question
 
 ## Prompt to give Codex
 
 ```text
 Read AGENTS.md and docs/NEXT_STEP.md.
-Implement only the current step.
-Add or update tests for the changed behavior.
-Do not modify unrelated files.
-At the end, summarize what changed and how to run the tests.
+Create the sample document corpus in sample_docs/.
+Document the evaluation questions and expected outcomes in docs/EVALUATION_DATASET.md.
+Do not modify the application code.
+Summarize the dataset and how it improves evaluation.
 ```
