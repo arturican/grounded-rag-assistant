@@ -6,38 +6,43 @@ Phase 10 - UI and packaging
 
 ## Task
 
-Add a backend-only Docker image so the API can be started in a clean, repeatable container before wiring the full multi-service stack.
+Add a minimal multi-service local demo stack so the existing backend container and frontend app can be started together without introducing production deployment complexity.
 
 ## Files to update
 
-- `Dockerfile.backend`
-- `README.md` to include exact backend container build/run commands
+- `docker-compose.yml` for a local backend + frontend demo stack
+- `README.md` to include exact `docker compose up` / verification commands
 
 ## Required behavior
 
-- `docker build -f Dockerfile.backend .` should succeed
-- `docker run` for the backend image should expose the FastAPI app on port 8000
-- `/health` should respond successfully from the running container
-- no frontend or application-logic changes should be required
+- `docker compose up --build` should start:
+  - backend API on port 8000
+  - frontend demo on port 5173 or another explicit local port
+- frontend container should point to the backend container with the correct API base URL
+- `/health` should respond successfully from the backend container
+- frontend root page should load successfully from the compose stack
+- no application-logic changes should be required
 
 ## Constraints
 
-- use a lightweight Python base image (for example `python:3.12-slim`)
-- keep the step backend-only; do not add frontend Docker support or `docker-compose` yet
+- keep the scope local-demo only; do not add production orchestration
+- reuse the existing `Dockerfile.backend` instead of redesigning backend packaging
 - do not change application logic
 
 ## Done when
 
-- backend image builds without errors
-- containerized backend answers `/health`
-- README.md documents the exact local Docker verification commands
+- local compose stack starts without manual per-service setup
+- backend `/health` works through the containerized stack
+- frontend page loads against the containerized backend
+- README.md documents the exact local compose verification commands
 
 ## Prompt to give Codex
 
 ```text
 Read AGENTS.md and docs/NEXT_STEP.md.
-Create Dockerfile.backend only.
-Do not add docker-compose or frontend containerization yet.
-Update README.md with exact docker build/run/health-check commands.
-Keep the change limited to packaging for the backend service.
+Add a minimal local docker compose stack for the existing backend container and frontend demo.
+Reuse Dockerfile.backend for the API.
+Do not introduce production deployment features.
+Update README.md with exact docker compose build/run/verification commands.
+Keep the change limited to local packaging and startup flow.
 ```

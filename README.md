@@ -138,6 +138,26 @@ cd /home/artur/project/grounded-rag-assistant
 .venv/bin/python -m uvicorn backend.app.api:app --reload
 ```
 
+Build the backend-only Docker image:
+
+```bash
+cd /home/artur/project/grounded-rag-assistant
+docker build -f Dockerfile.backend -t grounded-rag-assistant-backend .
+```
+
+Run the backend container locally:
+
+```bash
+cd /home/artur/project/grounded-rag-assistant
+docker run --rm -p 8000:8000 --name grounded-rag-assistant-backend grounded-rag-assistant-backend
+```
+
+Verify the containerized API health endpoint from another terminal:
+
+```bash
+curl http://127.0.0.1:8000/health
+```
+
 Run the frontend demo locally (in a second terminal):
 
 ```bash
