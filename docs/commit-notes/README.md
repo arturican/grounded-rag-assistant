@@ -50,6 +50,7 @@
 - [`2026-04-14-api-index-file-input-dir-400.md`](./2026-04-14-api-index-file-input-dir-400.md) - защита `/index` от случая, когда `input_dir` существует, но указывает на файл, с явным 400 и узким API regression test
 - [`2026-04-14-pdf-loader-missing-extractor-error.md`](./2026-04-14-pdf-loader-missing-extractor-error.md) - явный failure mode для `.pdf` без настроенного extractor: читаемое сообщение и focused loader regression test
 - [`2026-04-14-frontend-index-informative-errors.md`](./2026-04-14-frontend-index-informative-errors.md) - улучшение информативности ошибок `/index` во фронтенде: согласованность с `/ask` и рендеринг деталей от бэкенда
+- [`2026-04-14-frontend-build-typing-baseline-fix.md`](./2026-04-14-frontend-build-typing-baseline-fix.md) - восстановление базовой frontend buildability: типизация `import.meta.env` и CSS side-effect imports для Vite/TypeScript
 
 ## Документационные коммиты, которые поясняют проект
 

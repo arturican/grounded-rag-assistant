@@ -6,40 +6,38 @@ Phase 10 - UI and packaging
 
 ## Task
 
-Add Docker support to the project to simplify local development and deployment of the full RAG stack (backend + frontend).
+Add a backend-only Docker image so the API can be started in a clean, repeatable container before wiring the full multi-service stack.
 
 ## Files to update
 
 - `Dockerfile.backend`
-- `Dockerfile.frontend`
-- `docker-compose.yaml`
-- `README.md` to include Docker run instructions
+- `README.md` to include exact backend container build/run commands
 
 ## Required behavior
 
-- a single `docker-compose up` should start both the FastAPI backend and the Vite frontend
-- backend should be accessible on port 8000
-- frontend should be accessible on port 5173 and correctly point to the backend service
-- indexing and asking should work end-to-end within the containers
+- `docker build -f Dockerfile.backend .` should succeed
+- `docker run` for the backend image should expose the FastAPI app on port 8000
+- `/health` should respond successfully from the running container
+- no frontend or application-logic changes should be required
 
 ## Constraints
 
-- use lightweight base images (e.g., python:3.12-slim, node:20-slim)
-- ensure volumes are used for the local index and sample documents if necessary
+- use a lightweight Python base image (for example `python:3.12-slim`)
+- keep the step backend-only; do not add frontend Docker support or `docker-compose` yet
 - do not change application logic
 
 ## Done when
 
-- `docker-compose build && docker-compose up` finishes without errors
-- the application is reachable and functional through the Docker-exposed ports
-- README.md is updated with the new commands
+- backend image builds without errors
+- containerized backend answers `/health`
+- README.md documents the exact local Docker verification commands
 
 ## Prompt to give Codex
 
 ```text
 Read AGENTS.md and docs/NEXT_STEP.md.
-Create Dockerfiles for both backend and frontend.
-Set up a docker-compose.yaml to orchestrate the services.
-Update README.md with Docker usage instructions.
-Ensure the frontend correctly connects to the backend within the Docker network.
+Create Dockerfile.backend only.
+Do not add docker-compose or frontend containerization yet.
+Update README.md with exact docker build/run/health-check commands.
+Keep the change limited to packaging for the backend service.
 ```
