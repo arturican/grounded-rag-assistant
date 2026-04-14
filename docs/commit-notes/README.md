@@ -39,6 +39,7 @@
 - [`2026-04-14-cli-non-paged-source-rendering-regression.md`](./2026-04-14-cli-non-paged-source-rendering-regression.md) - regression-проверка корректного рендеринга источников без страниц в CLI
 - [`2026-04-14-cli-tie-order-regression.md`](./2026-04-14-cli-tie-order-regression.md) - regression-проверка стабильного порядка источников в CLI при равных retrieval score
 - [`2026-04-14-api-index-file-input-dir-400.md`](./2026-04-14-api-index-file-input-dir-400.md) - защита `/index` от случая, когда `input_dir` существует, но указывает на файл, с явным 400 и узким API regression test
+- [`2026-04-14-pdf-loader-missing-extractor-error.md`](./2026-04-14-pdf-loader-missing-extractor-error.md) - явный failure mode для `.pdf` без настроенного extractor: читаемое сообщение и focused loader regression test
 
 ## Документационные коммиты, которые поясняют проект
 

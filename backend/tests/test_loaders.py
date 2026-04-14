@@ -126,6 +126,19 @@ class LoadPdfFileTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "pdf backend is unavailable"):
                 load_pdf_file(source_path)
 
+    def test_load_pdf_file_reports_missing_extractor_with_source_path(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source_path = Path(temp_dir) / "notes.pdf"
+            source_path.write_text("placeholder", encoding="utf-8")
+
+            with self.assertRaises(RuntimeError) as error:
+                load_pdf_file(source_path)
+
+            self.assertEqual(
+                str(error.exception),
+                f"pdf backend is unavailable: no extractor configured for file {source_path}",
+            )
+
     def test_load_document_routes_pdf_files_to_pdf_loader(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             source_path = Path(temp_dir) / "notes.pdf"

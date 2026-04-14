@@ -65,7 +65,7 @@ def load_pdf_file(
     if not source_path.exists():
         raise FileNotFoundError(f"pdf file not found: {source_path}")
     if extractor is None:
-        raise RuntimeError("pdf backend is unavailable")
+        raise RuntimeError(f"pdf backend is unavailable: no extractor configured for file {source_path}")
 
     raw_pages = extractor(source_path)
     pages = tuple(
