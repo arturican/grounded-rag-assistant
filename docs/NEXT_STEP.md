@@ -6,7 +6,7 @@ Phase 9 - Evaluation and quality
 
 ## Task
 
-Add one CLI-level regression test that verifies source rendering for paged PDF chunks includes the page number.
+Add one CLI-level regression test that verifies source rendering without page metadata keeps the non-paged format.
 
 ## Files to update
 
@@ -16,11 +16,12 @@ Add one CLI-level regression test that verifies source rendering for paged PDF c
 ## Required behavior
 
 - build a tiny local index fixture or another narrow CLI-facing setup that reaches the rendered `Sources:` output
-- use a chunk or saved index entry whose source metadata includes a non-`None` page value
+- use a chunk or saved index entry whose source metadata keeps `page=None`
 - assert that the CLI output includes:
   - the `Sources:` block
   - the source path
-  - the human-readable `page N` suffix from `format_sources(...)`
+  - the non-paged `(<chunk_id>)` formatting from `format_sources(...)`
+  - no unexpected `page N` suffix for that source line
 - keep the test deterministic and local, without adding PDF parser dependencies
 
 ## Constraints
@@ -32,7 +33,7 @@ Add one CLI-level regression test that verifies source rendering for paged PDF c
 
 ## Done when
 
-- CLI has an explicit regression-style check for page-aware source rendering
+- CLI has an explicit regression-style check for non-paged source rendering
 - the narrow verification command is still accurate in the docs
 
 ## Prompt to give Codex

@@ -1,6 +1,7 @@
 """End-to-end tests for the local CLI slice."""
 
 import io
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -84,3 +85,33 @@ class CliVerticalSliceTests(unittest.TestCase):
                 rendered_output,
             )
             self.assertNotIn("Sources:", rendered_output)
+
+    def test_run_cli_renders_page_numbers_in_sources_block(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            docs_dir = workspace / "docs"
+            docs_dir.mkdir()
+            (docs_dir / "alpha.txt").write_text("Alpha facts live here.", encoding="utf-8")
+            source_path = docs_dir / "paged.pdf"
+            index_path = workspace / "index.json"
+
+            index_directory(docs_dir, index_path)
+
+            saved_index = json.loads(index_path.read_text(encoding="utf-8"))
+            paged_chunk = saved_index["indexed_chunks"][0]["chunk"]
+            paged_chunk["source"] = str(source_path)
+            paged_chunk["page"] = 7
+            paged_chunk["chunk_id"] = f"{source_path}::page-7::chunk-0"
+            index_path.write_text(
+                json.dumps(saved_index, indent=2) + "\n",
+                encoding="utf-8",
+            )
+
+            ask_output = io.StringIO()
+            exit_code = run_cli(["ask", str(index_path), "Alpha facts"], stdout=ask_output)
+            rendered_lines = ask_output.getvalue().splitlines()
+            expected_source_line = f"- {source_path} page 7 ({source_path}::page-7::chunk-0)"
+
+            self.assertEqual(exit_code, 0)
+            self.assertIn("Sources:", rendered_lines)
+            self.assertIn(expected_source_line, rendered_lines)

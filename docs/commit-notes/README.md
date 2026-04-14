@@ -35,6 +35,7 @@
 - [`2026-04-14-cli-unrelated-query-regression.md`](./2026-04-14-cli-unrelated-query-regression.md) - regression-проверка честного отказа CLI на нерелевантный запрос к локальному индексу
 - [`2026-04-14-retrieval-score-tie-regression.md`](./2026-04-14-retrieval-score-tie-regression.md) - regression-проверка детерминированного порядка retrieval-результатов при равных similarity score
 - [`2026-04-14-answering-max-chunks-one-regression.md`](./2026-04-14-answering-max-chunks-one-regression.md) - regression-проверка того, что `max_chunks=1` оставляет в answer layer только верхний retrieved chunk
+- [`2026-04-14-cli-page-aware-source-rendering-regression.md`](./2026-04-14-cli-page-aware-source-rendering-regression.md) - regression-проверка того, что CLI показывает `page N` в блоке `Sources:` для чанка с page metadata
 
 ## Документационные коммиты, которые поясняют проект
 
