@@ -6,35 +6,28 @@ Phase 9 - Evaluation and quality
 
 ## Task
 
-Add one CLI-level regression test that verifies source rendering without page metadata keeps the non-paged format.
+Verify that retrieval score ties are handled deterministically at the CLI level.
 
 ## Files to update
 
 - `backend/tests/test_cli.py`
-- `README.md` only if the verification command changes
 
 ## Required behavior
 
-- build a tiny local index fixture or another narrow CLI-facing setup that reaches the rendered `Sources:` output
-- use a chunk or saved index entry whose source metadata keeps `page=None`
-- assert that the CLI output includes:
-  - the `Sources:` block
-  - the source path
-  - the non-paged `(<chunk_id>)` formatting from `format_sources(...)`
-  - no unexpected `page N` suffix for that source line
-- keep the test deterministic and local, without adding PDF parser dependencies
+- setup a small index where two chunks have identical text (thus identical embeddings and scores)
+- ensure they come from different sources
+- verify that `run_cli(["ask", ...])` always returns them in a stable order (e.g. by chunk_id or source path)
+- this avoids flaky CLI tests when scores are equal
 
 ## Constraints
 
-- do not change CLI behavior unless the new test reveals a real bug
-- do not add a new evaluation framework
-- prefer one focused regression test over broader CLI coverage changes
-- reuse existing test patterns already present in `backend/tests/test_cli.py`
+- use `index_directory` and a temporary setup to reach the deterministic retrieval logic
+- keep the test narrow and focused on CLI-visible stability
 
 ## Done when
 
-- CLI has an explicit regression-style check for non-paged source rendering
-- the narrow verification command is still accurate in the docs
+- CLI has a regression test for retrieval tie-breaking
+- all CLI tests pass
 
 ## Prompt to give Codex
 

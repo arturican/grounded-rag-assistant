@@ -115,3 +115,27 @@ class CliVerticalSliceTests(unittest.TestCase):
             self.assertEqual(exit_code, 0)
             self.assertIn("Sources:", rendered_lines)
             self.assertIn(expected_source_line, rendered_lines)
+
+    def test_run_cli_renders_non_paged_sources_without_page_suffix_regression(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            docs_dir = workspace / "docs"
+            docs_dir.mkdir()
+            (docs_dir / "alpha.txt").write_text("Alpha facts live here.", encoding="utf-8")
+            source_path = docs_dir / "alpha.txt"
+            index_path = workspace / "index.json"
+
+            index_directory(docs_dir, index_path)
+
+            ask_output = io.StringIO()
+            exit_code = run_cli(["ask", str(index_path), "Alpha facts"], stdout=ask_output)
+            rendered_lines = ask_output.getvalue().splitlines()
+
+            # For non-paged sources (txt), format_sources returns "{source} ({chunk_id})"
+            # and cli.py adds the "- " prefix for each line in the Sources: block.
+            expected_source_line = f"- {source_path} ({source_path}::page-none::chunk-0)"
+
+            self.assertEqual(exit_code, 0)
+            self.assertIn("Sources:", rendered_lines)
+            self.assertIn(expected_source_line, rendered_lines)
+            self.assertFalse(any("page None" in line for line in rendered_lines))
