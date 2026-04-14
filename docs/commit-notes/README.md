@@ -38,8 +38,18 @@
 - [`2026-04-14-cli-page-aware-source-rendering-regression.md`](./2026-04-14-cli-page-aware-source-rendering-regression.md) - regression-проверка того, что CLI показывает `page N` в блоке `Sources:` для чанка с page metadata
 - [`2026-04-14-cli-non-paged-source-rendering-regression.md`](./2026-04-14-cli-non-paged-source-rendering-regression.md) - regression-проверка корректного рендеринга источников без страниц в CLI
 - [`2026-04-14-cli-tie-order-regression.md`](./2026-04-14-cli-tie-order-regression.md) - regression-проверка стабильного порядка источников в CLI при равных retrieval score
+- [`2026-04-14-evaluation-dataset-smoke-hardening.md`](./2026-04-14-evaluation-dataset-smoke-hardening.md) - усиление smoke-check для evaluation dataset: проверка ожидаемого источника и честного отказа на Q10
+- [`2026-04-14-frontend-vite-scaffold.md`](./2026-04-14-frontend-vite-scaffold.md) - добавление минимального frontend-каркаса на React + TypeScript + Vite и подготовка typed API-слоя
+- [`2026-04-14-frontend-demo-page.md`](./2026-04-14-frontend-demo-page.md) - реализация одностраничного frontend-demo с действиями health/index/ask и рендерингом grounded-ответа
+- [`2026-04-14-api-cors-for-local-demo.md`](./2026-04-14-api-cors-for-local-demo.md) - минимальная CORS-настройка FastAPI для локального frontend-demo и regression-тест заголовка origin
+- [`2026-04-14-docs-sync-for-frontend-demo.md`](./2026-04-14-docs-sync-for-frontend-demo.md) - синхронизация README и архитектурной документации с текущим frontend demo flow
+- [`2026-04-14-final-verification-and-next-step.md`](./2026-04-14-final-verification-and-next-step.md) - финальный прогон проверок сессии и фиксация следующего маленького шага в NEXT_STEP
+- [`2026-04-14-agent-support-files-baseline.md`](./2026-04-14-agent-support-files-baseline.md) - добавление практичных agent-support файлов (SONNET/playbook/bugfix workflow/project map/review template)
+- [`2026-04-14-frontend-ask-readable-error-block.md`](./2026-04-14-frontend-ask-readable-error-block.md) - улучшение user-facing отображения ошибок `/ask` во frontend: статус + detail вместо сырого текста
+- [`2026-04-14-api-index-missing-input-dir-404.md`](./2026-04-14-api-index-missing-input-dir-404.md) - защита `/index` от несуществующего `input_dir` с явным 404 и узким API regression test
 - [`2026-04-14-api-index-file-input-dir-400.md`](./2026-04-14-api-index-file-input-dir-400.md) - защита `/index` от случая, когда `input_dir` существует, но указывает на файл, с явным 400 и узким API regression test
 - [`2026-04-14-pdf-loader-missing-extractor-error.md`](./2026-04-14-pdf-loader-missing-extractor-error.md) - явный failure mode для `.pdf` без настроенного extractor: читаемое сообщение и focused loader regression test
+- [`2026-04-14-frontend-index-informative-errors.md`](./2026-04-14-frontend-index-informative-errors.md) - улучшение информативности ошибок `/index` во фронтенде: согласованность с `/ask` и рендеринг деталей от бэкенда
 
 ## Документационные коммиты, которые поясняют проект
 

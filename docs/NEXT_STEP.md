@@ -6,38 +6,40 @@ Phase 10 - UI and packaging
 
 ## Task
 
-Make frontend `/index` error rendering as informative as `/ask`, so failed indexing requests show backend status and detail instead of a generic raw error string.
+Add Docker support to the project to simplify local development and deployment of the full RAG stack (backend + frontend).
 
 ## Files to update
 
-- `frontend/src/App.tsx`
-- `frontend/src/api.ts` only if the existing `ApiError` contract needs a small adjustment
-- `README.md` only if local demo behavior needs clarification
+- `Dockerfile.backend`
+- `Dockerfile.frontend`
+- `docker-compose.yaml`
+- `README.md` to include Docker run instructions
 
 ## Required behavior
 
-- when `/index` fails, the UI should show a readable backend error block with status and detail
-- keep `/ask` error rendering unchanged
-- keep the change minimal and local to the current demo frontend
+- a single `docker-compose up` should start both the FastAPI backend and the Vite frontend
+- backend should be accessible on port 8000
+- frontend should be accessible on port 5173 and correctly point to the backend service
+- indexing and asking should work end-to-end within the containers
 
 ## Constraints
 
-- do not add new dependencies
-- do not redesign the page
-- do not change backend API semantics in the same step
+- use lightweight base images (e.g., python:3.12-slim, node:20-slim)
+- ensure volumes are used for the local index and sample documents if necessary
+- do not change application logic
 
 ## Done when
 
-- failed `/index` requests render a more helpful client-facing error message
-- `/ask` behavior stays as-is
-- the next step remains small and directly runnable
+- `docker-compose build && docker-compose up` finishes without errors
+- the application is reachable and functional through the Docker-exposed ports
+- README.md is updated with the new commands
 
 ## Prompt to give Codex
 
 ```text
 Read AGENTS.md and docs/NEXT_STEP.md.
-Implement only a small frontend `/index` error-rendering improvement.
-Reuse the existing backend error detail when possible.
-Keep `/ask` behavior unchanged.
-Do not expand into broader frontend refactors.
+Create Dockerfiles for both backend and frontend.
+Set up a docker-compose.yaml to orchestrate the services.
+Update README.md with Docker usage instructions.
+Ensure the frontend correctly connects to the backend within the Docker network.
 ```
