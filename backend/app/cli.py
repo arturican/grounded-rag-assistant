@@ -60,7 +60,7 @@ def ask_index(index_path: str | Path, query: str) -> list[str]:
     store = InMemoryRetrievalStore(FakeEmbeddingProvider())
     store.load_indexed_chunks(saved_index.indexed_chunks)
     results = store.search(query, top_k=3)
-    answer = build_grounded_answer(results)
+    answer = build_grounded_answer(results, query=query)
 
     lines = [f"Answer: {answer.answer}"]
     if answer.sources:

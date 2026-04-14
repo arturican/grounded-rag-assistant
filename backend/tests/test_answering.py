@@ -125,6 +125,24 @@ class BuildGroundedAnswerTests(unittest.TestCase):
         self.assertIn("could not answer from the retrieved context", answer.answer)
         self.assertEqual(answer.sources, [])
 
+    def test_build_grounded_answer_rejects_high_score_chunks_without_query_overlap(self) -> None:
+        chunks = [
+            RetrievedChunk(
+                chunk_id="chunk-1",
+                source="notes.txt",
+                page=None,
+                chunk_index=0,
+                text="Office visitors must sign in before 17:00.",
+                score=0.99,
+            )
+        ]
+
+        answer = build_grounded_answer(chunks, query="What is the travel reimbursement limit?")
+
+        self.assertFalse(answer.used_context)
+        self.assertIn("could not answer from the retrieved context", answer.answer)
+        self.assertEqual(answer.sources, [])
+
     def test_build_grounded_answer_rejects_non_positive_max_chunks(self) -> None:
         with self.assertRaisesRegex(ValueError, "max_chunks must be > 0"):
             build_grounded_answer([], max_chunks=0)

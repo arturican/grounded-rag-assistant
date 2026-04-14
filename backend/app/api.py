@@ -3,6 +3,7 @@
 from pathlib import Path
 
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from backend.app.answering import GroundedAnswer, build_grounded_answer
@@ -58,6 +59,13 @@ class AskResponse(BaseModel):
 
 
 app = FastAPI(title="grounded-rag-assistant")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:5173", "http://localhost:5173"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.get("/health", response_model=HealthResponse)
@@ -72,7 +80,14 @@ def index_documents(request: IndexRequest) -> IndexResponse:
     """Index supported documents from a local directory."""
 
     input_dir = Path(request.input_dir)
-    if input_dir.exists() and not input_dir.is_dir():
+
+    if not input_dir.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"input_dir does not exist: {request.input_dir}",
+        )
+
+    if not input_dir.is_dir():
         raise HTTPException(
             status_code=400,
             detail=f"input_dir is not a directory: {request.input_dir}",
@@ -114,4 +129,4 @@ def _ask_grounded_question(index_path: str | Path, query: str, *, top_k: int) ->
     store = InMemoryRetrievalStore(FakeEmbeddingProvider())
     store.load_indexed_chunks(saved_index.indexed_chunks)
     retrieved_chunks = store.search(query, top_k=top_k)
-    return build_grounded_answer(retrieved_chunks, max_chunks=top_k)
+    return build_grounded_answer(retrieved_chunks, max_chunks=top_k, query=query)

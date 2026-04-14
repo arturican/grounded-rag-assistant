@@ -1,5 +1,6 @@
 """Deterministic grounded answer assembly."""
 
+import re
 from dataclasses import dataclass
 
 from backend.app.models import RetrievedChunk
@@ -7,6 +8,32 @@ from backend.app.models import RetrievedChunk
 _INSUFFICIENT_CONTEXT_MESSAGE = (
     "I could not answer from the retrieved context. Please index more relevant documents or refine the query."
 )
+_STOPWORDS = {
+    "a",
+    "an",
+    "and",
+    "are",
+    "at",
+    "be",
+    "by",
+    "for",
+    "from",
+    "how",
+    "in",
+    "is",
+    "it",
+    "of",
+    "on",
+    "or",
+    "the",
+    "to",
+    "what",
+    "when",
+    "where",
+    "who",
+    "why",
+    "with",
+}
 
 
 @dataclass(slots=True, frozen=True)
@@ -32,6 +59,7 @@ def build_grounded_answer(
     *,
     min_score: float = 0.9,
     max_chunks: int = 3,
+    query: str | None = None,
 ) -> GroundedAnswer:
     """Build a deterministic grounded answer from retrieved context only."""
 
@@ -41,6 +69,9 @@ def build_grounded_answer(
         return GroundedAnswer(answer=_INSUFFICIENT_CONTEXT_MESSAGE, sources=[], used_context=False)
 
     selected_chunks = retrieved_chunks[:max_chunks]
+    if query and not _chunks_share_query_terms(query, selected_chunks):
+        return GroundedAnswer(answer=_INSUFFICIENT_CONTEXT_MESSAGE, sources=[], used_context=False)
+
     answer_text = "\n\n".join(chunk.text for chunk in selected_chunks)
     sources = [
         AnswerSource(source=chunk.source, page=chunk.page, chunk_id=chunk.chunk_id)
@@ -61,3 +92,24 @@ def format_sources(sources: list[AnswerSource]) -> list[str]:
         formatted_sources.append(f"{source.source} page {source.page} ({source.chunk_id})")
 
     return formatted_sources
+
+
+def _chunks_share_query_terms(query: str, retrieved_chunks: list[RetrievedChunk]) -> bool:
+    """Return whether retrieved context shares at least one meaningful term with the query."""
+
+    query_terms = _extract_meaningful_terms(query)
+    if not query_terms:
+        return True
+
+    chunk_terms = set().union(*(_extract_meaningful_terms(chunk.text) for chunk in retrieved_chunks))
+    return bool(query_terms & chunk_terms)
+
+
+def _extract_meaningful_terms(text: str) -> set[str]:
+    """Extract lowercase query/content terms while dropping tiny tokens and common stopwords."""
+
+    return {
+        token
+        for token in re.findall(r"[a-z0-9]+", text.lower())
+        if len(token) >= 3 and token not in _STOPWORDS
+    }

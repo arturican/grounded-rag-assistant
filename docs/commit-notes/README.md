@@ -49,6 +49,7 @@
 - [`2026-04-14-api-index-missing-input-dir-404.md`](./2026-04-14-api-index-missing-input-dir-404.md) - защита `/index` от несуществующего `input_dir` с явным 404 и узким API regression test
 - [`2026-04-14-api-index-file-input-dir-400.md`](./2026-04-14-api-index-file-input-dir-400.md) - защита `/index` от случая, когда `input_dir` существует, но указывает на файл, с явным 400 и узким API regression test
 - [`2026-04-14-api-ask-missing-index-404.md`](./2026-04-14-api-ask-missing-index-404.md) - защита `/ask` от отсутствующего `index_path` с явным 404 и узким API regression test
+- [`2026-04-14-query-overlap-grounding-guard.md`](./2026-04-14-query-overlap-grounding-guard.md) - дополнительная grounded-защита от нерелевантных high-score совпадений: answer layer отказывается использовать контекст без meaningful overlap с query
 - [`2026-04-14-pdf-loader-missing-extractor-error.md`](./2026-04-14-pdf-loader-missing-extractor-error.md) - явный failure mode для `.pdf` без настроенного extractor: читаемое сообщение и focused loader regression test
 - [`2026-04-14-frontend-index-informative-errors.md`](./2026-04-14-frontend-index-informative-errors.md) - улучшение информативности ошибок `/index` во фронтенде: согласованность с `/ask` и рендеринг деталей от бэкенда
 - [`2026-04-14-frontend-build-typing-baseline-fix.md`](./2026-04-14-frontend-build-typing-baseline-fix.md) - восстановление базовой frontend buildability: типизация `import.meta.env` и CSS side-effect imports для Vite/TypeScript
