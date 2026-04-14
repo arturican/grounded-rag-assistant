@@ -139,3 +139,32 @@ class CliVerticalSliceTests(unittest.TestCase):
             self.assertIn("Sources:", rendered_lines)
             self.assertIn(expected_source_line, rendered_lines)
             self.assertFalse(any("page None" in line for line in rendered_lines))
+
+    def test_run_cli_returns_tied_sources_in_stable_order_regression(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            docs_dir = workspace / "docs"
+            docs_dir.mkdir()
+            shared_text = "Shared tie facts live here."
+            first_source = docs_dir / "alpha.txt"
+            second_source = docs_dir / "beta.txt"
+            first_source.write_text(shared_text, encoding="utf-8")
+            second_source.write_text(shared_text, encoding="utf-8")
+            index_path = workspace / "index.json"
+
+            index_directory(docs_dir, index_path)
+
+            ask_output = io.StringIO()
+            exit_code = run_cli(["ask", str(index_path), shared_text], stdout=ask_output)
+            rendered_lines = ask_output.getvalue().splitlines()
+            first_source_line = f"- {first_source} ({first_source}::page-none::chunk-0)"
+            second_source_line = f"- {second_source} ({second_source}::page-none::chunk-0)"
+
+            self.assertEqual(exit_code, 0)
+            self.assertIn("Sources:", rendered_lines)
+            self.assertIn(first_source_line, rendered_lines)
+            self.assertIn(second_source_line, rendered_lines)
+            self.assertLess(
+                rendered_lines.index(first_source_line),
+                rendered_lines.index(second_source_line),
+            )

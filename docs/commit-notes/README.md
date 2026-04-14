@@ -37,6 +37,7 @@
 - [`2026-04-14-answering-max-chunks-one-regression.md`](./2026-04-14-answering-max-chunks-one-regression.md) - regression-проверка того, что `max_chunks=1` оставляет в answer layer только верхний retrieved chunk
 - [`2026-04-14-cli-page-aware-source-rendering-regression.md`](./2026-04-14-cli-page-aware-source-rendering-regression.md) - regression-проверка того, что CLI показывает `page N` в блоке `Sources:` для чанка с page metadata
 - [`2026-04-14-cli-non-paged-source-rendering-regression.md`](./2026-04-14-cli-non-paged-source-rendering-regression.md) - regression-проверка корректного рендеринга источников без страниц в CLI
+- [`2026-04-14-cli-tie-order-regression.md`](./2026-04-14-cli-tie-order-regression.md) - regression-проверка стабильного порядка источников в CLI при равных retrieval score
 
 ## Документационные коммиты, которые поясняют проект
 

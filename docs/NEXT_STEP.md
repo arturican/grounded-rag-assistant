@@ -6,28 +6,29 @@ Phase 9 - Evaluation and quality
 
 ## Task
 
-Verify that retrieval score ties are handled deterministically at the CLI level.
+Verify that the API `ask` response preserves page metadata in returned sources.
 
 ## Files to update
 
-- `backend/tests/test_cli.py`
+- `backend/tests/test_api.py`
 
 ## Required behavior
 
-- setup a small index where two chunks have identical text (thus identical embeddings and scores)
-- ensure they come from different sources
-- verify that `run_cli(["ask", ...])` always returns them in a stable order (e.g. by chunk_id or source path)
-- this avoids flaky CLI tests when scores are equal
+- build or patch a tiny saved index entry whose source metadata includes a concrete page number
+- call the `/ask` endpoint and inspect the structured JSON response
+- verify that the first returned source keeps both `page` and `chunk_id`
+- keep the test narrow and focused on API-visible source metadata, not formatting strings
 
 ## Constraints
 
-- use `index_directory` and a temporary setup to reach the deterministic retrieval logic
-- keep the test narrow and focused on CLI-visible stability
+- reuse the existing FastAPI test patterns in `backend/tests/test_api.py`
+- do not change API behavior unless the regression test reveals a real bug
+- avoid adding new dependencies or broader API fixtures
 
 ## Done when
 
-- CLI has a regression test for retrieval tie-breaking
-- all CLI tests pass
+- API has a regression test for page-aware source metadata
+- the narrow API test passes in the project test environment
 
 ## Prompt to give Codex
 
