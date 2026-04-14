@@ -39,6 +39,24 @@ class ApiTests(unittest.TestCase):
             self.assertGreaterEqual(payload["indexed_chunk_count"], 1)
             self.assertEqual(len(payload["indexed_chunk_ids"]), payload["indexed_chunk_count"])
 
+    def test_index_endpoint_returns_404_for_missing_input_dir(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            missing_docs_dir = workspace / "missing-docs"
+            index_path = workspace / "index.json"
+
+            response = self.client.post(
+                "/index",
+                json={"input_dir": str(missing_docs_dir), "index_path": str(index_path)},
+            )
+
+            self.assertEqual(response.status_code, 404)
+            self.assertEqual(
+                response.json()["detail"],
+                f"input_dir does not exist: {missing_docs_dir}",
+            )
+            self.assertFalse(index_path.exists())
+
     def test_index_endpoint_returns_400_for_file_input_dir(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = Path(temp_dir)
