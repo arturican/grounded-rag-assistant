@@ -6,36 +6,38 @@ Phase 9 - Evaluation and quality
 
 ## Task
 
-Create a small sample corpus and a set of evaluation questions for manual/automated verification.
+Add a small regression script or test module that exercises the evaluation corpus through the current text-only CLI path.
 
 ## Files to update
 
-- `sample_docs/` (new directory)
-- `docs/EVALUATION_DATASET.md` (new file)
+- `backend/tests/` (new or updated test)
+- `docs/EVALUATION_DATASET.md`
+- `README.md` if verification commands change
 
 ## Required behavior
 
-- provide 3-5 sample documents (.txt, .md, .pdf) with overlapping facts
-- define 5-10 evaluation questions with expected grounded answers and source references
-- this dataset will be used to verify retrieval recall and answer precision in future steps
+- verify the text-only subset of `sample_docs/` can still be indexed with the current CLI
+- verify at least one grounded question returns the expected fact from the sample corpus
+- keep the check fast enough for routine local runs
 
 ## Constraints
 
-- keep sample documents small to ensure fast test runs
-- ensure documents are realistic for the RAG use case
-- PDF should be included to test page-aware retrieval
+- do not add new dependencies
+- do not expand into a full evaluation framework yet
+- keep the test aligned with the current deterministic answering behavior
 
 ## Done when
 
-- `sample_docs/` directory contains verification files
-- `docs/EVALUATION_DATASET.md` documents the expected behavior for each question
+- a narrow automated check covers the evaluation corpus smoke path
+- docs explain how to run that check locally
+- the next step remains small and directly runnable
 
 ## Prompt to give Codex
 
 ```text
 Read AGENTS.md and docs/NEXT_STEP.md.
-Create the sample document corpus in sample_docs/.
-Document the evaluation questions and expected outcomes in docs/EVALUATION_DATASET.md.
-Do not modify the application code.
-Summarize the dataset and how it improves evaluation.
+Add a narrow automated regression check for the sample evaluation corpus using the current text-only CLI flow.
+Update documentation with the exact local verification command.
+Keep the change small and do not introduce a full evaluation framework yet.
+Summarize the test coverage and the next recommended step.
 ```

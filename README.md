@@ -88,7 +88,7 @@ After the CLI slice is stable, expose the same flow through FastAPI.
 Create a local virtual environment and install the project in editable mode:
 
 ```bash
-cd /home/art/project/grounded-rag-assistant
+cd /home/artur/project/grounded-rag-assistant
 python3 -m venv .venv
 .venv/bin/python -m pip install -e .
 ```
@@ -96,7 +96,7 @@ python3 -m venv .venv
 If your system Python does not provide `venv`, create the same environment with `virtualenv` instead:
 
 ```bash
-cd /home/art/project/grounded-rag-assistant
+cd /home/artur/project/grounded-rag-assistant
 python3 -m virtualenv .venv
 .venv/bin/python -m pip install -e .
 ```
@@ -106,7 +106,8 @@ python3 -m virtualenv .venv
 Run the narrowest unit checks from WSL:
 
 ```bash
-cd /home/art/project/grounded-rag-assistant
+cd /home/artur/project/grounded-rag-assistant
+.venv/bin/python -m unittest backend.tests.test_evaluation_dataset -v
 .venv/bin/python -m unittest backend.tests.test_loaders -v
 .venv/bin/python -m unittest backend.tests.test_chunking -v
 .venv/bin/python -m unittest backend.tests.test_models -v
@@ -121,22 +122,25 @@ cd /home/art/project/grounded-rag-assistant
 Run the current CLI slice:
 
 ```bash
-cd /home/art/project/grounded-rag-assistant
-.venv/bin/python -m backend.app.cli index ./sample_docs ./local_index.json
+cd /home/artur/project/grounded-rag-assistant
+.venv/bin/python -m backend.app.cli index ./sample_docs/text_only ./local_index.json
 .venv/bin/python -m backend.app.cli ask ./local_index.json "Your question here"
 ```
+
+The repository also contains `sample_docs/reference/facility_guide.pdf` for future page-aware evaluation work.
+Until the runtime PDF backend is wired into the full CLI flow, use `sample_docs/text_only/` for the local end-to-end demo.
 
 Run the API locally:
 
 ```bash
-cd /home/art/project/grounded-rag-assistant
+cd /home/artur/project/grounded-rag-assistant
 .venv/bin/python -m uvicorn backend.app.api:app --reload
 ```
 
 Verify the API endpoints:
 
 ```bash
-cd /home/art/project/grounded-rag-assistant
+cd /home/artur/project/grounded-rag-assistant
 .venv/bin/python -m unittest backend.tests.test_api -v
 curl http://127.0.0.1:8000/health
 curl -X POST http://127.0.0.1:8000/index \

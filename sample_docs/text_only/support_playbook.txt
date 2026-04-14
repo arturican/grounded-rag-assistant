@@ -1,0 +1,9 @@
+Lighthouse Analytics Support Playbook
+
+Billing questions should be routed to finance-ops@lighthouse.example.
+The target response time for a P1 incident is 15 minutes.
+
+If an outage affects the Atlas pilot, page infra-oncall@lighthouse.example and notify Mira Chen.
+Backup verification results are posted every Wednesday after the 18:30 UTC review window.
+
+After-hours maintenance visitors must have a pre-registered badge before arrival.
