@@ -21,8 +21,8 @@ Upload documents, index them, ask a question, get an answer with sources.
 
 - ingest `.txt`, `.md`, `.pdf`
 - create chunks with overlap
-- generate embeddings
-- store vectors in a local FAISS index
+- generate embeddings (deterministic fake provider in current local build)
+- store vectors in a local JSON index (in-memory retrieval store export)
 - retrieve top-k relevant chunks
 - answer only from retrieved context
 - show citations/sources in the response
@@ -51,6 +51,7 @@ PDF loading is currently designed behind an injectable backend in the loader lay
 - `docs/ARCHITECTURE_RU.md` — Russian walkthrough of the current project architecture
 - `docs/commit-notes/` — Russian-language study notes for key commits
 - `backend/` — application code and tests
+- `frontend/` — single-page React + TypeScript + Vite demo client for local API usage
 
 ## Commit notes for study
 
@@ -137,6 +138,27 @@ cd /home/artur/project/grounded-rag-assistant
 .venv/bin/python -m uvicorn backend.app.api:app --reload
 ```
 
+Run the frontend demo locally (in a second terminal):
+
+```bash
+cd /home/artur/project/grounded-rag-assistant/frontend
+npm install
+npm run dev
+```
+
+Frontend default API base URL is `http://127.0.0.1:8000`. You can override it with:
+
+```bash
+VITE_API_BASE_URL=http://127.0.0.1:8000 npm run dev
+```
+
+For failed `/ask` requests (for example, missing index path), the demo UI renders a readable backend error block with status and detail.
+
+The backend now allows local demo CORS origins for Vite:
+
+- `http://127.0.0.1:5173`
+- `http://localhost:5173`
+
 Verify the API endpoints:
 
 ```bash
@@ -149,4 +171,14 @@ curl -X POST http://127.0.0.1:8000/index \
 curl -X POST http://127.0.0.1:8000/ask \
   -H "Content-Type: application/json" \
   -d '{"index_path":"./local_index.json","query":"Your question here"}'
+```
+
+If `/index` receives a missing `input_dir`, API now returns a clear 404 with a readable `detail` message.
+If `/index` receives an existing file path instead of a directory, API now returns a clear 400 with a readable `detail` message.
+
+Build the frontend for a quick verification:
+
+```bash
+cd /home/artur/project/grounded-rag-assistant/frontend
+npm run build
 ```
