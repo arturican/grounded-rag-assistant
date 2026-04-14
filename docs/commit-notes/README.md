@@ -33,6 +33,7 @@
 - [`a9872e3-evaluation-regression-checks.md`](./a9872e3-evaluation-regression-checks.md) - детерминированные regression-проверки для retrieval и answer layer
 - [`faf7f09-api-honest-failure-regression.md`](./faf7f09-api-honest-failure-regression.md) - regression-проверка честного отказа на уровне API и настройка порога для user-facing answer flow
 - [`2026-04-14-cli-unrelated-query-regression.md`](./2026-04-14-cli-unrelated-query-regression.md) - regression-проверка честного отказа CLI на нерелевантный запрос к локальному индексу
+- [`2026-04-14-retrieval-score-tie-regression.md`](./2026-04-14-retrieval-score-tie-regression.md) - regression-проверка детерминированного порядка retrieval-результатов при равных similarity score
 
 ## Документационные коммиты, которые поясняют проект
 

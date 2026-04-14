@@ -117,3 +117,71 @@ class InMemoryRetrievalStoreTests(unittest.TestCase):
         self.assertEqual([result.source for result in results], ["architecture.md", "roadmap.md"])
         self.assertEqual(results[0].chunk_id, "chunk-architecture")
         self.assertGreater(results[0].score, results[1].score)
+
+    def test_retrieval_regression_uses_deterministic_order_for_equal_scores(self) -> None:
+        query = "tie-break query"
+        fixed_embeddings = {
+            query: [1.0, 0.0, 0.0],
+            "Higher score chunk.": [0.95, 0.0, 0.0],
+            "Same score lower chunk index.": [0.8, 0.6, 0.0],
+            "Same score higher chunk index.": [0.8, 0.6, 0.0],
+            "Same score same chunk index but later chunk id.": [0.8, 0.6, 0.0],
+            "Same score same chunk index but earlier chunk id.": [0.8, 0.6, 0.0],
+        }
+        store = InMemoryRetrievalStore(FixedEvaluationEmbeddingProvider(fixed_embeddings))
+        store.add_chunks(
+            [
+                DocumentChunk(
+                    chunk_id="chunk-top-score",
+                    source="ranking.md",
+                    page=None,
+                    chunk_index=4,
+                    text="Higher score chunk.",
+                ),
+                DocumentChunk(
+                    chunk_id="chunk-lower-index",
+                    source="ranking.md",
+                    page=None,
+                    chunk_index=1,
+                    text="Same score lower chunk index.",
+                ),
+                DocumentChunk(
+                    chunk_id="chunk-higher-index",
+                    source="ranking.md",
+                    page=None,
+                    chunk_index=3,
+                    text="Same score higher chunk index.",
+                ),
+                DocumentChunk(
+                    chunk_id="chunk-zeta",
+                    source="ranking.md",
+                    page=None,
+                    chunk_index=2,
+                    text="Same score same chunk index but later chunk id.",
+                ),
+                DocumentChunk(
+                    chunk_id="chunk-alpha",
+                    source="ranking.md",
+                    page=None,
+                    chunk_index=2,
+                    text="Same score same chunk index but earlier chunk id.",
+                ),
+            ]
+        )
+
+        results = store.search(query, top_k=5)
+
+        self.assertEqual(
+            [result.chunk_id for result in results],
+            [
+                "chunk-top-score",
+                "chunk-lower-index",
+                "chunk-alpha",
+                "chunk-zeta",
+                "chunk-higher-index",
+            ],
+        )
+        self.assertGreater(results[0].score, results[1].score)
+        self.assertEqual(results[1].score, results[2].score)
+        self.assertEqual(results[2].score, results[3].score)
+        self.assertEqual(results[3].score, results[4].score)

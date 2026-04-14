@@ -6,33 +6,33 @@ Phase 9 - Evaluation and quality
 
 ## Task
 
-Add one retrieval-level regression test for deterministic ordering when similarity scores are equal.
+Add one answering-level regression test that proves `max_chunks=1` keeps only the top retrieved chunk in the final answer and sources.
 
 ## Files to update
 
-- `backend/tests/test_retrieval.py`
+- `backend/tests/test_answering.py`
 - `README.md` only if the verification command changes
 
 ## Required behavior
 
-- build the regression around `FixedEvaluationEmbeddingProvider` or another existing deterministic test helper
-- create at least two chunks whose similarity to the query is exactly the same
-- assert that `InMemoryRetrievalStore.search()` keeps the existing stable tie-break order:
-  - higher score first
-  - for equal scores, lower `chunk_index` first
-  - if needed, `chunk_id` remains the final deterministic fallback
-- keep the check independent from external models and filesystem state
+- create a deterministic `RetrievedChunk` list with more than one relevant chunk
+- call `build_grounded_answer(..., max_chunks=1)`
+- assert that:
+  - only the highest-ranked chunk text appears in the answer
+  - lower-ranked chunk text is not included
+  - returned `sources` contains exactly one source for the top chunk
+- keep the test fully local and deterministic
 
 ## Constraints
 
-- do not change retrieval behavior unless the new test reveals a real bug
+- do not change answer assembly behavior unless the new test reveals a real bug
 - do not add a new evaluation framework
-- prefer one focused regression test over broader retrieval refactors
-- reuse existing test patterns already present in `backend/tests/test_retrieval.py`
+- prefer one focused regression test over broader answer-layer changes
+- reuse existing test patterns already present in `backend/tests/test_answering.py`
 
 ## Done when
 
-- retrieval has an explicit regression-style check for deterministic ordering on score ties
+- answer assembly has an explicit regression-style check for the `max_chunks=1` contract
 - the narrow verification command is still accurate in the docs
 
 ## Prompt to give Codex
