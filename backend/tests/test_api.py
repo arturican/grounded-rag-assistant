@@ -39,6 +39,25 @@ class ApiTests(unittest.TestCase):
             self.assertGreaterEqual(payload["indexed_chunk_count"], 1)
             self.assertEqual(len(payload["indexed_chunk_ids"]), payload["indexed_chunk_count"])
 
+    def test_index_endpoint_returns_400_for_file_input_dir(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            workspace = Path(temp_dir)
+            file_input_path = workspace / "not-a-directory.txt"
+            file_input_path.write_text("Alpha facts live here.", encoding="utf-8")
+            index_path = workspace / "index.json"
+
+            response = self.client.post(
+                "/index",
+                json={"input_dir": str(file_input_path), "index_path": str(index_path)},
+            )
+
+            self.assertEqual(response.status_code, 400)
+            self.assertEqual(
+                response.json()["detail"],
+                f"input_dir is not a directory: {file_input_path}",
+            )
+            self.assertFalse(index_path.exists())
+
     def test_ask_endpoint_returns_grounded_answer_and_sources(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = Path(temp_dir)

@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 from backend.app.answering import GroundedAnswer, build_grounded_answer
@@ -70,6 +70,13 @@ def health() -> HealthResponse:
 @app.post("/index", response_model=IndexResponse)
 def index_documents(request: IndexRequest) -> IndexResponse:
     """Index supported documents from a local directory."""
+
+    input_dir = Path(request.input_dir)
+    if input_dir.exists() and not input_dir.is_dir():
+        raise HTTPException(
+            status_code=400,
+            detail=f"input_dir is not a directory: {request.input_dir}",
+        )
 
     indexed_chunk_ids = index_directory(request.input_dir, request.index_path)
     return IndexResponse(
