@@ -115,3 +115,18 @@ class ApiTests(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 422)
+
+    def test_ask_endpoint_returns_404_for_missing_index(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            missing_index_path = Path(temp_dir) / "missing-index.json"
+
+            response = self.client.post(
+                "/ask",
+                json={"index_path": str(missing_index_path), "query": "Alpha facts"},
+            )
+
+            self.assertEqual(response.status_code, 404)
+            self.assertEqual(
+                response.json()["detail"],
+                f"index_path does not exist: {missing_index_path}",
+            )

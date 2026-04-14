@@ -90,6 +90,12 @@ def index_documents(request: IndexRequest) -> IndexResponse:
 def ask_question(request: AskRequest) -> AskResponse:
     """Answer a question strictly from the saved local index."""
 
+    if not Path(request.index_path).exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"index_path does not exist: {request.index_path}",
+        )
+
     answer = _ask_grounded_question(request.index_path, request.query, top_k=request.top_k)
     return AskResponse(
         answer=answer.answer,
