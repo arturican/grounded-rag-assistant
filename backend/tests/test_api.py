@@ -19,6 +19,12 @@ class ApiTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {"status": "ok"})
 
+    def test_health_allows_local_frontend_origin(self) -> None:
+        response = self.client.get("/health", headers={"Origin": "http://127.0.0.1:5173"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers["access-control-allow-origin"], "http://127.0.0.1:5173")
+
     def test_index_endpoint_builds_local_index(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             workspace = Path(temp_dir)
