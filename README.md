@@ -21,8 +21,8 @@ Upload documents, index them, ask a question, get an answer with sources.
 
 - ingest `.txt`, `.md`, `.pdf`
 - create chunks with overlap
-- generate embeddings
-- store vectors in a local FAISS index
+- generate embeddings (deterministic fake provider in current local build)
+- store vectors in a local JSON index (in-memory retrieval store export)
 - retrieve top-k relevant chunks
 - answer only from retrieved context
 - show citations/sources in the response
@@ -38,6 +38,8 @@ Upload documents, index them, ask a question, get an answer with sources.
 - pytest for tests
 - Ruff for linting
 
+PDF loading is currently designed behind an injectable backend in the loader layer, so the parser choice stays isolated from ingestion logic.
+
 ## Repository map
 
 - `AGENTS.md` — instructions for Codex and other coding agents
@@ -46,7 +48,22 @@ Upload documents, index them, ask a question, get an answer with sources.
 - `docs/ROADMAP.md` — phased roadmap with acceptance criteria
 - `docs/AI_WORKFLOW.md` — best practices for coding with AI agents
 - `docs/NEXT_STEP.md` — the next small implementation step to execute
+- `docs/ARCHITECTURE_RU.md` — Russian walkthrough of the current project architecture
+- `docs/commit-notes/` — Russian-language study notes for key commits
 - `backend/` — application code and tests
+- `frontend/` — single-page React + TypeScript + Vite demo client for local API usage
+
+## Commit notes for study
+
+If you want to understand the project commit by commit, start with:
+
+- `docs/commit-notes/README.md`
+
+That directory contains Russian-language notes for the main project commits and the key documentation commits that explain them:
+
+- what was added in the commit
+- how the new code works
+- why that step matters in the overall RAG pipeline
 
 ## Working principle
 
@@ -66,3 +83,122 @@ Implement a CLI-only vertical slice:
 - print answer + sources
 
 After the CLI slice is stable, expose the same flow through FastAPI.
+
+## Local setup
+
+Create a local virtual environment and install the project in editable mode:
+
+```bash
+cd /home/artur/project/grounded-rag-assistant
+python3 -m venv .venv
+.venv/bin/python -m pip install -e .
+```
+
+If your system Python does not provide `venv`, create the same environment with `virtualenv` instead:
+
+```bash
+cd /home/artur/project/grounded-rag-assistant
+python3 -m virtualenv .venv
+.venv/bin/python -m pip install -e .
+```
+
+## Local verification
+
+Run the narrowest unit checks from WSL:
+
+```bash
+cd /home/artur/project/grounded-rag-assistant
+.venv/bin/python -m unittest backend.tests.test_evaluation_dataset -v
+.venv/bin/python -m unittest backend.tests.test_loaders -v
+.venv/bin/python -m unittest backend.tests.test_chunking -v
+.venv/bin/python -m unittest backend.tests.test_models -v
+.venv/bin/python -m unittest backend.tests.test_embeddings -v
+.venv/bin/python -m unittest backend.tests.test_ingestion -v
+.venv/bin/python -m unittest backend.tests.test_retrieval -v
+.venv/bin/python -m unittest backend.tests.test_answering -v
+.venv/bin/python -m unittest backend.tests.test_cli -v
+.venv/bin/python -m unittest backend.tests.test_api -v
+```
+
+Run the current CLI slice:
+
+```bash
+cd /home/artur/project/grounded-rag-assistant
+.venv/bin/python -m backend.app.cli index ./sample_docs/text_only ./local_index.json
+.venv/bin/python -m backend.app.cli ask ./local_index.json "Your question here"
+```
+
+The repository also contains `sample_docs/reference/facility_guide.pdf` for future page-aware evaluation work.
+Until the runtime PDF backend is wired into the full CLI flow, use `sample_docs/text_only/` for the local end-to-end demo.
+
+Run the API locally:
+
+```bash
+cd /home/artur/project/grounded-rag-assistant
+.venv/bin/python -m uvicorn backend.app.api:app --reload
+```
+
+Build the backend-only Docker image:
+
+```bash
+cd /home/artur/project/grounded-rag-assistant
+docker build -f Dockerfile.backend -t grounded-rag-assistant-backend .
+```
+
+Run the backend container locally:
+
+```bash
+cd /home/artur/project/grounded-rag-assistant
+docker run --rm -p 8000:8000 --name grounded-rag-assistant-backend grounded-rag-assistant-backend
+```
+
+Verify the containerized API health endpoint from another terminal:
+
+```bash
+curl http://127.0.0.1:8000/health
+```
+
+Run the frontend demo locally (in a second terminal):
+
+```bash
+cd /home/artur/project/grounded-rag-assistant/frontend
+npm install
+npm run dev
+```
+
+Frontend default API base URL is `http://127.0.0.1:8000`. You can override it with:
+
+```bash
+VITE_API_BASE_URL=http://127.0.0.1:8000 npm run dev
+```
+
+For failed `/ask` requests (for example, missing index path), the demo UI renders a readable backend error block with status and detail.
+
+The backend now allows local demo CORS origins for Vite:
+
+- `http://127.0.0.1:5173`
+- `http://localhost:5173`
+
+Verify the API endpoints:
+
+```bash
+cd /home/artur/project/grounded-rag-assistant
+.venv/bin/python -m unittest backend.tests.test_api -v
+curl http://127.0.0.1:8000/health
+curl -X POST http://127.0.0.1:8000/index \
+  -H "Content-Type: application/json" \
+  -d '{"input_dir":"./sample_docs","index_path":"./local_index.json"}'
+curl -X POST http://127.0.0.1:8000/ask \
+  -H "Content-Type: application/json" \
+  -d '{"index_path":"./local_index.json","query":"Your question here"}'
+```
+
+If `/index` receives a missing `input_dir`, API now returns a clear 404 with a readable `detail` message.
+If `/index` receives an existing file path instead of a directory, API now returns a clear 400 with a readable `detail` message.
+
+Build the frontend for a quick verification:
+
+```bash
+cd /home/artur/project/grounded-rag-assistant/frontend
+npm run build
+```

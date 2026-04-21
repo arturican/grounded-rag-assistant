@@ -1,0 +1,10 @@
+Lighthouse Analytics Operations Handbook
+
+The main operations office is at 18 River Lane, floor 3, Moscow.
+Visitors must sign in at reception before 17:00 on business days.
+
+Standard support coverage runs from 08:00 to 18:00 UTC, Monday through Friday.
+Urgent infrastructure incidents must be escalated to infra-oncall@lighthouse.example.
+
+Weekly backup verification starts every Wednesday at 18:30 UTC.
+Any Friday production change after 15:00 UTC requires director approval.
